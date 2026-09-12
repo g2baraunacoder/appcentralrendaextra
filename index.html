@@ -1,0 +1,1541 @@
+<title>Central da Renda Extra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F7F1; --surface:#FFFFFF; --surface-2:#EAF0E7;
+  --text:#16241D; --text-muted:#55645C;
+  --primary:#1F6F54; --primary-dark:#144F3B; --primary-soft:#DCEEE4;
+  --accent:#B87A1E; --accent-soft:#F3E3C2;
+  --border:#DCE5D9;
+  --success:#2E8B57; --warning:#B8860B; --danger:#B3413B;
+  --shadow: 0 1px 2px rgba(22,36,29,.06), 0 8px 24px -12px rgba(22,36,29,.18);
+  --font-display:'Fraunces', Georgia, serif;
+  --font-body:'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1712; --surface:#17231C; --surface-2:#1D2A22;
+    --text:#E7EFE9; --text-muted:#9FB0A5;
+    --primary:#55C99A; --primary-dark:#2E8B66; --primary-soft:#1E332A;
+    --accent:#E3B15C; --accent-soft:#33291A;
+    --border:#263229;
+    --success:#4FBE94; --warning:#E3B15C; --danger:#E08277;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1712; --surface:#17231C; --surface-2:#1D2A22;
+  --text:#E7EFE9; --text-muted:#9FB0A5;
+  --primary:#55C99A; --primary-dark:#2E8B66; --primary-soft:#1E332A;
+  --accent:#E3B15C; --accent-soft:#33291A;
+  --border:#263229;
+  --success:#4FBE94; --warning:#E3B15C; --danger:#E08277;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased; line-height:1.5;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; text-wrap:balance; margin:0; color:var(--text);}
+p{margin:0;}
+button{font-family:inherit;}
+.tabular{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+a{color:var(--primary-dark);}
+
+/* ---------- App shell ---------- */
+.app-wrap{
+  min-height:100vh;
+  display:flex; justify-content:center;
+  background:
+    radial-gradient(680px 420px at 15% -10%, var(--primary-soft) 0%, transparent 60%),
+    radial-gradient(560px 360px at 100% 0%, var(--accent-soft) 0%, transparent 55%),
+    var(--bg);
+}
+.app-shell{
+  width:100%; max-width:480px; min-height:100vh;
+  background:var(--bg);
+  display:flex; flex-direction:column;
+  position:relative;
+  border-inline:1px solid var(--border);
+}
+.side-panel{
+  display:none; flex-direction:column; justify-content:center;
+  max-width:360px; margin-top:2vh; padding:12px 4px;
+}
+.side-panel .kicker{ text-transform:uppercase; letter-spacing:.14em; font-size:12px; font-weight:700; color:var(--primary-dark); }
+.side-panel h1{ font-size:40px; line-height:1.08; margin-top:14px; }
+.side-panel .flow{ margin-top:28px; display:flex; flex-direction:column; gap:10px; }
+.side-panel .flow-step{ display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:13px; color:var(--text-muted); }
+.side-panel .flow-step b{ color:var(--text); font-family:var(--font-body); font-weight:700; }
+.side-panel .flow-dot{ width:8px;height:8px;border-radius:50%; background:var(--primary); flex:none; }
+.side-panel .flow-arrow{ color:var(--border); padding-left:3px; }
+.side-panel p.desc{ margin-top:22px; color:var(--text-muted); font-size:15px; }
+@media (min-width:900px){
+  .app-shell{ min-height:min(920px,96vh); margin-block:2vh; border-radius:28px; box-shadow:var(--shadow); overflow:hidden; border:1px solid var(--border); }
+  .app-wrap{ align-items:flex-start; gap:48px; padding-inline:24px; }
+  .side-panel{ display:flex; }
+}
+
+/* ---------- Header ---------- */
+.app-header{
+  position:sticky; top:0; z-index:20;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:16px 20px 12px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.brand{ display:flex; align-items:center; gap:10px; }
+.brand-mark{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(155deg, var(--primary), var(--primary-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px; flex:none; box-shadow:var(--shadow);
+}
+.brand-text .name{ font-family:var(--font-display); font-weight:700; font-size:16px; line-height:1.15; }
+.brand-text .tag{ font-size:11.5px; color:var(--text-muted); }
+.streak-chip{
+  display:flex; align-items:center; gap:6px;
+  background:var(--surface-2); border:1px solid var(--border);
+  padding:6px 10px; border-radius:999px; font-size:12.5px; font-weight:600;
+  color:var(--primary-dark); white-space:nowrap;
+}
+
+/* ---------- Content ---------- */
+.app-main{ flex:1; overflow-y:auto; padding:18px 20px 100px; display:flex; flex-direction:column; gap:18px; }
+.screen{ display:none; flex-direction:column; gap:18px; animation:fade .25s ease; }
+.screen.active{ display:flex; }
+@keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+.eyebrow{ text-transform:uppercase; font-size:11.5px; font-weight:700; letter-spacing:.1em; color:var(--primary-dark); }
+.screen-title{ font-size:24px; margin-top:4px; }
+.screen-sub{ color:var(--text-muted); font-size:14px; margin-top:6px; }
+
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:18px;
+  padding:18px; box-shadow:var(--shadow);
+}
+.card + .card{ margin-top:0; }
+.card-title{ font-size:15px; font-weight:800; font-family:var(--font-body); display:flex; align-items:center; gap:8px; }
+.card-title .ic{ font-size:17px; }
+.muted{ color:var(--text-muted); font-size:13.5px; }
+
+/* Flow diagram home */
+.flow-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.flow-cell{ background:var(--surface-2); border-radius:14px; padding:12px 6px; text-align:center; display:flex; flex-direction:column; gap:6px; align-items:center; }
+.flow-cell .n{ font-family:var(--font-mono); font-size:11px; color:var(--text-muted); }
+.flow-cell .ic{ font-size:20px; }
+.flow-cell .t{ font-size:11.5px; font-weight:700; line-height:1.2; }
+
+/* Quick grid */
+.quick-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.quick-tile{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px;
+  display:flex; flex-direction:column; gap:8px; text-align:left; cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.quick-tile .ic{ font-size:22px; }
+.quick-tile .t{ font-weight:800; font-size:13.5px; }
+.quick-tile .d{ font-size:11.5px; color:var(--text-muted); line-height:1.3; }
+
+.stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.stat-tile{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 10px; text-align:center; }
+.stat-tile .v{ font-family:var(--font-mono); font-weight:600; font-size:17px; }
+.stat-tile .l{ font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+
+/* Bottom nav */
+.tab-bar{
+  position:sticky; bottom:0; z-index:20;
+  display:grid; grid-template-columns:repeat(6,1fr);
+  background:color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+.tab-btn{
+  background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:6px 2px; border-radius:10px; color:var(--text-muted); cursor:pointer;
+}
+.tab-btn .ic{ font-size:18px; }
+.tab-btn .l{ font-size:9.5px; font-weight:700; }
+.tab-btn.active{ color:var(--primary-dark); }
+.tab-btn.active .ic{ transform:translateY(-1px); }
+.tab-btn:focus-visible, button:focus-visible, input:focus-visible, .tab-btn:focus-visible{ outline:2px solid var(--primary); outline-offset:2px; }
+
+/* Search + chips */
+.search-box{ display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:10px 14px; }
+.search-box input{ border:none; outline:none; background:none; color:var(--text); font-size:14px; width:100%; font-family:var(--font-body); }
+.chip-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none; }
+.chip-row::-webkit-scrollbar{ display:none; }
+.chip{
+  flex:none; padding:7px 13px; border-radius:999px; border:1px solid var(--border); background:var(--surface);
+  font-size:12.5px; font-weight:700; color:var(--text-muted); cursor:pointer; white-space:nowrap;
+}
+.chip.active{ background:var(--primary); border-color:var(--primary); color:#fff; }
+
+.idea-count{ font-family:var(--font-mono); font-size:12px; color:var(--text-muted); }
+.idea-list{ display:flex; flex-direction:column; gap:8px; }
+.idea-cat-label{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--primary-dark); margin:10px 0 2px; }
+.idea-item{
+  display:flex; align-items:flex-start; gap:10px; background:var(--surface); border:1px solid var(--border);
+  border-radius:13px; padding:11px 12px;
+}
+.idea-item .ic{ font-size:15px; margin-top:1px; }
+.idea-item .txt{ flex:1; font-size:13.5px; line-height:1.35; }
+.fav-btn{ background:none; border:none; cursor:pointer; font-size:16px; color:var(--border); line-height:1; padding:2px; }
+.fav-btn.active{ color:var(--danger); }
+.empty-state{ text-align:center; padding:30px 10px; color:var(--text-muted); font-size:13.5px; }
+
+/* Quiz */
+.quiz-opt{
+  display:flex; align-items:center; gap:10px; background:var(--surface-2); border:1px solid var(--border);
+  border-radius:12px; padding:10px 12px; font-size:13.5px; cursor:pointer; font-weight:600;
+}
+.quiz-opt input{ accent-color:var(--primary); width:16px; height:16px; }
+.quiz-opt.checked{ border-color:var(--primary); background:var(--primary-soft); }
+.btn{
+  border:none; border-radius:12px; padding:12px 16px; font-weight:800; font-size:14px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
+}
+.btn-primary{ background:var(--primary); color:#fff; }
+.btn-primary:hover{ background:var(--primary-dark); }
+.btn-ghost{ background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
+
+/* Forms */
+.field{ display:flex; flex-direction:column; gap:5px; }
+.field label{ font-size:12px; font-weight:700; color:var(--text-muted); }
+.field input, .field select{
+  border:1px solid var(--border); background:var(--surface); border-radius:11px; padding:10px 12px;
+  font-size:14.5px; color:var(--text); font-family:var(--font-mono); width:100%;
+}
+.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.field input:focus, .field select:focus{ outline:2px solid var(--primary); outline-offset:1px; }
+
+/* Bar viz */
+.bar-track{ height:12px; border-radius:999px; background:var(--surface-2); overflow:hidden; display:flex; }
+.bar-seg{ height:100%; }
+.legend-row{ display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:8px; }
+.legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-muted); }
+.legend-dot{ width:9px;height:9px;border-radius:3px; flex:none; }
+.status-pill{ display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:12px; font-weight:800; }
+.status-good{ background:color-mix(in srgb, var(--success) 18%, var(--surface)); color:var(--success); }
+.status-warn{ background:color-mix(in srgb, var(--warning) 20%, var(--surface)); color:var(--warning); }
+.status-bad{ background:color-mix(in srgb, var(--danger) 18%, var(--surface)); color:var(--danger); }
+
+/* Accordion */
+.accordion-item{ border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--surface); }
+.accordion-head{
+  width:100%; background:none; border:none; padding:13px 14px; display:flex; align-items:center; justify-content:space-between;
+  gap:10px; cursor:pointer; text-align:left; color:var(--text);
+}
+.accordion-head .t{ font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:8px; }
+.accordion-head .chev{ transition:transform .2s ease; color:var(--text-muted); flex:none; }
+.accordion-item.open .chev{ transform:rotate(180deg); }
+.accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+.accordion-item.open .accordion-body{ max-height:600px; }
+.accordion-body-in{ padding:0 14px 15px; font-size:13.3px; color:var(--text-muted); line-height:1.55; display:flex; flex-direction:column; gap:6px; }
+.accordion-body-in b{ color:var(--text); }
+.tag-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:2px; }
+.tag{ font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:999px; }
+.tag-risk-baixo{ background:color-mix(in srgb, var(--success) 18%, var(--surface)); color:var(--success); }
+.tag-risk-medio{ background:color-mix(in srgb, var(--warning) 20%, var(--surface)); color:var(--warning); }
+.tag-risk-alto{ background:color-mix(in srgb, var(--danger) 18%, var(--surface)); color:var(--danger); }
+.tag-neutral{ background:var(--surface-2); color:var(--text-muted); }
+
+.disclaimer{
+  background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  border-radius:14px; padding:12px 14px; font-size:12px; color:var(--text); line-height:1.5;
+}
+
+/* Sim results */
+.result-box{ background:var(--primary-soft); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+.result-row{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; }
+.result-row .lab{ color:var(--text-muted); }
+.result-row .val{ font-family:var(--font-mono); font-weight:700; }
+.result-row.big .val{ font-size:20px; color:var(--primary-dark); }
+.chart-cols{ display:flex; align-items:flex-end; gap:5px; height:110px; margin-top:6px; }
+.chart-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px; height:100%; }
+.chart-col .bar{ width:100%; border-radius:5px 5px 0 0; background:linear-gradient(180deg, var(--primary), var(--primary-dark)); min-height:3px; }
+.chart-col .yl{ font-size:9px; color:var(--text-muted); font-family:var(--font-mono); }
+
+/* Challenge grid */
+.progress-wrap{ display:flex; align-items:center; gap:12px; }
+.progress-track{ flex:1; height:10px; border-radius:999px; background:var(--surface-2); overflow:hidden; }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--primary), var(--accent)); border-radius:999px; transition:width .3s ease; }
+.day-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.day-cell{
+  aspect-ratio:1; border-radius:12px; border:1px solid var(--border); background:var(--surface);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; position:relative;
+}
+.day-cell .d{ font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+.day-cell .v{ font-weight:800; font-size:12.5px; }
+.day-cell.done{ background:var(--primary); border-color:var(--primary); }
+.day-cell.done .d, .day-cell.done .v{ color:#fff; }
+.day-detail{ background:var(--surface-2); border-radius:14px; padding:13px 14px; font-size:13px; display:flex; flex-direction:column; gap:8px; }
+.day-detail .task{ font-weight:700; }
+
+/* Bonus list */
+.bonus-item{ display:flex; gap:12px; align-items:flex-start; }
+.bonus-item .ic{ font-size:22px; }
+.bonus-item .t{ font-weight:800; font-size:13.5px; }
+.bonus-item .d{ font-size:12.5px; color:var(--text-muted); margin-top:2px; line-height:1.4; }
+.divider{ height:1px; background:var(--border); margin:4px 0; }
+.method-item{ display:flex; gap:10px; }
+.method-num{ font-family:var(--font-mono); font-size:11px; color:var(--primary-dark); font-weight:700; padding-top:2px; flex:none; width:20px; }
+</style>
+
+<div class="app-wrap">
+  <div class="side-panel">
+    <div class="kicker">Painel financeiro pessoal</div>
+    <h1>Central da<br>Renda Extra</h1>
+    <div class="flow">
+      <div class="flow-step"><span class="flow-dot"></span> <b>Organizar</b> suas contas e gastos <span class="flow-arrow">↓</span></div>
+      <div class="flow-step"><span class="flow-dot"></span> <b>Economizar</b> com método e constância <span class="flow-arrow">↓</span></div>
+      <div class="flow-step"><span class="flow-dot"></span> <b>Investir</b> o que sobrou, com segurança <span class="flow-arrow">↓</span></div>
+      <div class="flow-step"><span class="flow-dot"></span> <b>Buscar renda extra</b> pra acelerar tudo</div>
+    </div>
+    <p class="desc">Tudo o que você precisa pra organizar sua vida financeira num só painel — pensado pra abrir pelo celular, todo santo dia.</p>
+  </div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">💰</div>
+        <div class="brand-text">
+          <div class="name">Central da Renda Extra</div>
+          <div class="tag">organizar · economizar · investir · ganhar mais</div>
+        </div>
+      </div>
+      <div class="streak-chip" id="streakChip">🔥 <span id="streakVal">0</span> dias</div>
+    </header>
+
+    <main class="app-main" id="appMain">
+
+      <!-- ===================== HOME ===================== -->
+      <section class="screen active" data-screen="home">
+        <div>
+          <div class="eyebrow">Visão geral</div>
+          <h2 class="screen-title">Seu painel de hoje</h2>
+          <p class="screen-sub">Um só lugar pra organizar o dinheiro, guardar mais e descobrir novas fontes de renda.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🧭</span> O caminho da Central</div>
+          <div class="flow-grid" style="margin-top:10px">
+            <div class="flow-cell"><span class="n">01</span><span class="ic">📊</span><span class="t">Organizar</span></div>
+            <div class="flow-cell"><span class="n">02</span><span class="ic">💰</span><span class="t">Economizar</span></div>
+            <div class="flow-cell"><span class="n">03</span><span class="ic">📈</span><span class="t">Investir</span></div>
+            <div class="flow-cell"><span class="n">04</span><span class="ic">💸</span><span class="t">Renda extra</span></div>
+          </div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-tile"><div class="v tabular" id="statSaldo">—</div><div class="l">saldo do mês</div></div>
+          <div class="stat-tile"><div class="v tabular" id="statFavoritos">0</div><div class="l">ideias salvas</div></div>
+          <div class="stat-tile"><div class="v tabular" id="statDesafio">0/30</div><div class="l">desafio</div></div>
+        </div>
+
+        <div>
+          <div class="card-title" style="padding:0 2px 10px"><span class="ic">🚀</span> Acesso rápido</div>
+          <div class="quick-grid">
+            <button class="quick-tile" data-goto="ideias"><span class="ic">💸</span><span class="t">500+ ideias de renda extra</span><span class="d">Filtre por perfil e salve suas favoritas</span></button>
+            <button class="quick-tile" data-goto="planejar"><span class="ic">📊</span><span class="t">Painel financeiro</span><span class="d">Organize renda, gastos e sobra do mês</span></button>
+            <button class="quick-tile" data-goto="investir"><span class="ic">📈</span><span class="t">Guia + simulador</span><span class="d">CDI, CDB, Tesouro, LCI/LCA, ETFs e ações</span></button>
+            <button class="quick-tile" data-goto="desafio"><span class="ic">🎯</span><span class="t">Desafio de 30 dias</span><span class="d">Economize progressivo + missões diárias</span></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🎁</span> Bônus da Central</div>
+          <p class="muted" style="margin-top:6px">Planners, checklist de renda extra por perfil e a planilha completa de controle financeiro em Excel. Veja tudo na aba Bônus.</p>
+        </div>
+      </section>
+
+      <!-- ===================== IDEIAS ===================== -->
+      <section class="screen" data-screen="ideias">
+        <div>
+          <div class="eyebrow">💸 Renda extra</div>
+          <h2 class="screen-title">500+ ideias pra ganhar mais</h2>
+          <p class="screen-sub">Busque, filtre por categoria ou responda o mini-quiz pra receber sugestões pro seu perfil.</p>
+        </div>
+
+        <div class="card" id="quizCard">
+          <div class="card-title"><span class="ic">🧩</span> Não sabe por onde começar?</div>
+          <p class="muted" style="margin:6px 0 10px">Marque o que combina com você:</p>
+          <div id="quizOpts" style="display:flex;flex-direction:column;gap:8px"></div>
+          <button class="btn btn-primary" id="quizBtn" style="margin-top:12px">Ver sugestões pra mim</button>
+        </div>
+
+        <div class="search-box">
+          <span>🔎</span>
+          <input type="text" id="ideaSearch" placeholder="Buscar ideia (ex: costura, carro, internet...)">
+        </div>
+        <div class="chip-row" id="catChips"></div>
+        <div class="idea-count"><span id="ideaCount">0</span> ideias encontradas</div>
+        <div class="idea-list" id="ideaList"></div>
+      </section>
+
+      <!-- ===================== PLANEJAR ===================== -->
+      <section class="screen" data-screen="planejar">
+        <div>
+          <div class="eyebrow">📊 Planejamento</div>
+          <h2 class="screen-title">Painel financeiro</h2>
+          <p class="screen-sub">Lance sua renda e seus gastos do mês pra enxergar pra onde o dinheiro está indo.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🧮</span> Meu mês</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+            <div class="field">
+              <label>Renda mensal (R$)</label>
+              <input type="number" inputmode="decimal" id="pRenda" placeholder="0,00">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Necessidades (moradia, contas, mercado)</label>
+                <input type="number" inputmode="decimal" id="pNecessidades" placeholder="0,00">
+              </div>
+              <div class="field">
+                <label>Desejos (lazer, compras, extras)</label>
+                <input type="number" inputmode="decimal" id="pDesejos" placeholder="0,00">
+              </div>
+            </div>
+            <div class="field">
+              <label>Guardado / investido no mês</label>
+              <input type="number" inputmode="decimal" id="pGuardado" placeholder="0,00">
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="plannerResult"></div>
+
+        <div>
+          <div class="card-title" style="padding:0 2px 10px"><span class="ic">💰</span> Métodos pra organizar e guardar dinheiro</div>
+          <div id="methodsAccordion" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <div class="card">
+          <div class="bonus-item">
+            <span class="ic">📥</span>
+            <div><div class="t">Planilha completa de controle financeiro</div><div class="d">Baixe o arquivo Excel enviado junto com a Central pra registrar lançamento por lançamento, mês a mês.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== INVESTIR ===================== -->
+      <section class="screen" data-screen="investir">
+        <div>
+          <div class="eyebrow">📈 Investir</div>
+          <h2 class="screen-title">Guia + simuladores</h2>
+          <p class="screen-sub">Entenda onde seu dinheiro pode trabalhar por você — e simule cenários antes de decidir.</p>
+        </div>
+
+        <div class="disclaimer">⚠️ Conteúdo educativo, não é recomendação de investimento. Rentabilidade passada não garante resultado futuro. Antes de investir, avalie seu perfil e, se precisar, procure um profissional certificado (CVM/ANBIMA).</div>
+
+        <div>
+          <div class="card-title" style="padding:0 2px 10px"><span class="ic">📘</span> Guia de investimentos</div>
+          <div id="investAccordion" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🧮</span> Simulador de investimentos</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+            <div class="field-row">
+              <div class="field"><label>Valor inicial (R$)</label><input type="number" id="sInicial" value="1000"></div>
+              <div class="field"><label>Aporte mensal (R$)</label><input type="number" id="sAporte" value="200"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Taxa estimada (% ao ano)</label><input type="number" step="0.1" id="sTaxa" value="10"></div>
+              <div class="field"><label>Prazo (anos)</label><input type="number" id="sPrazo" value="5"></div>
+            </div>
+            <button class="btn btn-primary" id="simBtn">Simular</button>
+          </div>
+          <div id="simResult"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🎯</span> Calculadora de metas financeiras</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+            <div class="field-row">
+              <div class="field"><label>Valor da meta (R$)</label><input type="number" id="gMeta" value="10000"></div>
+              <div class="field"><label>Prazo (meses)</label><input type="number" id="gPrazo" value="24"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Já tenho guardado (R$)</label><input type="number" id="gAtual" value="0"></div>
+              <div class="field"><label>Rentabilidade (% a.m.)</label><input type="number" step="0.01" id="gTaxa" value="0.7"></div>
+            </div>
+            <button class="btn btn-primary" id="goalBtn">Calcular aporte necessário</button>
+          </div>
+          <div id="goalResult"></div>
+        </div>
+      </section>
+
+      <!-- ===================== DESAFIO ===================== -->
+      <section class="screen" data-screen="desafio">
+        <div>
+          <div class="eyebrow">🎯 Desafio de 30 dias</div>
+          <h2 class="screen-title">Economia progressiva</h2>
+          <p class="screen-sub">Dia 1 guarde R$1, dia 2 guarde R$2... até o dia 30. No fim: <b>R$465</b> guardados + 30 hábitos financeiros novos.</p>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+            <span class="muted">Progresso</span>
+            <span class="tabular" style="font-weight:700;font-size:13px" id="challengeProgressText">0/30 dias</span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill" id="challengeBar" style="width:0%"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:10px">
+            <span class="muted">Total guardado</span>
+            <span class="tabular" style="font-weight:800;color:var(--primary-dark)" id="challengeSaved">R$ 0,00</span>
+          </div>
+        </div>
+
+        <div class="day-grid" id="dayGrid"></div>
+        <div class="day-detail" id="dayDetail" style="display:none"></div>
+      </section>
+
+      <!-- ===================== BÔNUS ===================== -->
+      <section class="screen" data-screen="bonus">
+        <div>
+          <div class="eyebrow">🎁 Bônus</div>
+          <h2 class="screen-title">Ferramentas e planners extras</h2>
+          <p class="screen-sub">Materiais complementares pra tirar tudo do papel.</p>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;gap:14px">
+          <div class="bonus-item"><span class="ic">📊</span><div><div class="t">Planilha completa de controle financeiro (Excel)</div><div class="d">Arquivo enviado junto com a Central — lançamentos mensais, categorias, dashboard automático e aba de metas.</div></div></div>
+          <div class="divider"></div>
+          <div class="bonus-item"><span class="ic">🗓️</span><div><div class="t">Planner mensal de finanças</div><div class="d">Checklist do mês: contas a pagar, data de vencimento, renda extra do mês e valor guardado.</div></div></div>
+          <div class="divider"></div>
+          <div class="bonus-item"><span class="ic">🎯</span><div><div class="t">Modelo de meta SMART</div><div class="d">Roteiro pra transformar "quero guardar dinheiro" numa meta específica, mensurável e com prazo.</div></div></div>
+          <div class="divider"></div>
+          <div class="bonus-item"><span class="ic">🧭</span><div><div class="t">Checklist de renda extra por perfil</div><div class="d">Use o mini-quiz na aba Renda Extra pra gerar sua lista personalizada de ideias.</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🗓️</span> Seu planner do mês</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px" id="plannerChecklist"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ic">🎯</span> Minha meta SMART</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+            <div class="field"><label>Específica — o que exatamente eu quero?</label><input type="text" id="smartEsp" placeholder="Ex: juntar dinheiro pra trocar de celular"></div>
+            <div class="field-row">
+              <div class="field"><label>Mensurável — quanto?</label><input type="text" id="smartVal" placeholder="Ex: R$ 1.500"></div>
+              <div class="field"><label>Prazo — até quando?</label><input type="text" id="smartPrazo" placeholder="Ex: dezembro"></div>
+            </div>
+            <div class="field"><label>Como — de onde vai sair o dinheiro?</label><input type="text" id="smartComo" placeholder="Ex: 2 ideias de renda extra + corte de assinaturas"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="tab-bar" id="tabBar">
+      <button class="tab-btn active" data-tab="home"><span class="ic">🏠</span><span class="l">Início</span></button>
+      <button class="tab-btn" data-tab="ideias"><span class="ic">💸</span><span class="l">Renda Extra</span></button>
+      <button class="tab-btn" data-tab="planejar"><span class="ic">📊</span><span class="l">Planejar</span></button>
+      <button class="tab-btn" data-tab="investir"><span class="ic">📈</span><span class="l">Investir</span></button>
+      <button class="tab-btn" data-tab="desafio"><span class="ic">🎯</span><span class="l">Desafio</span></button>
+      <button class="tab-btn" data-tab="bonus"><span class="ic">🎁</span><span class="l">Bônus</span></button>
+    </nav>
+  </div>
+</div>
+
+<script>
+// Base de ideias de renda extra — Central da Renda Extra
+// Estrutura: { cat: "nome categoria", icon: "emoji", items: [...] }
+const IDEAS_DB = [
+{ cat: "Internet & Digital", icon: "💻", items: [
+"Vender produtos digitais (e-books, planners, templates)",
+"Criar e vender cursos online gravados",
+"Trabalhar como assistente virtual",
+"Fazer gestão de redes sociais para pequenos negócios",
+"Digitar textos e planilhas por encomenda (digitação remota)",
+"Transcrever áudios e vídeos",
+"Vender fotos e vídeos em bancos de imagem",
+"Testar sites e aplicativos (usability testing pago)",
+"Preencher pesquisas remuneradas em plataformas confiáveis",
+"Fazer microtarefas em plataformas de crowdwork",
+"Revisar e corrigir textos (revisão de texto freelance)",
+"Criar landing pages simples para autônomos",
+"Montar e vender templates de Canva",
+"Vender presets de edição de foto (Lightroom)",
+"Editar vídeos curtos para redes sociais",
+"Legendar vídeos e criar cortes para Reels/TikTok",
+"Administrar grupos de WhatsApp/Telegram pagos",
+"Criar e vender planilhas no Excel/Google Sheets",
+"Fazer dropshipping de nicho",
+"Revender produtos digitais com licença de revenda (PLR)",
+"Criar loja virtual pequena (Nuvemshop, Shopify)",
+"Vender infoprodutos de nicho (dietas, exercícios, finanças)",
+"Fazer moderação de comunidades online",
+"Trabalhar como social media freelancer para clínicas e salões",
+"Criar newsletters pagas por assinatura",
+"Fazer curadoria de conteúdo para perfis",
+"Vender espaço publicitário em blog ou canal",
+"Participar de programas de afiliados (Amazon, Shopee, Hotmart)",
+"Criar aplicativos simples ou automações no-code",
+"Oferecer suporte técnico remoto básico",
+"Criar and vender fontes ou ícones digitais",
+"Fazer dublagem ou narração para vídeos",
+"Gravar áudios para legendagem/IA de voz",
+"Vender mockups e arte digital",
+"Criar quizzes e formulários personalizados para negócios",
+"Fazer live commerce (vender ao vivo em redes sociais)",
+"Trabalhar como copywriter freelance",
+"Criar roteiros para vídeos e podcasts",
+"Vender cursos de instrumentos musicais online",
+"Oferecer mentoria paga em uma área que domina",
+"Criar comunidade paga de nicho (grupo fechado com conteúdo)",
+"Vender wallpapers e papéis de parede digitais",
+"Fazer consultoria de SEO para pequenos sites",
+"Criar automações no Zapier/Make para clientes",
+"Vender planilhas de gestão para autônomos (financeiro, estoque, agenda)",
+] },
+{ cat: "Freelance & Serviços Profissionais", icon: "🧑‍💼", items: [
+"Contabilidade e escrituração para pequenas empresas",
+"Serviços de digitação e formatação de currículos",
+"Consultoria financeira pessoal básica (organização de contas)",
+"Advocacia em causas simples (se for formado)",
+"Design gráfico freelance (logos, artes, identidade visual)",
+"Fotografia de eventos e ensaios",
+"Filmagem e produção de vídeos institucionais",
+"Serviços de tradução juramentada (se habilitado)",
+"Personal organizer (organização de casas e escritórios)",
+"Consultoria em marketing digital para pequenos negócios",
+"Assessoria de imagem e styling",
+"Coaching de carreira",
+"Preparação de currículos e cartas de apresentação",
+"Serviços de RH terceirizado para pequenas empresas",
+"Auditoria e revisão de planilhas financeiras",
+"Elaboração de projetos e planos de negócio",
+"Serviços de despachante documental",
+"Corretagem de imóveis autônoma",
+"Corretagem de seguros",
+"Representação comercial autônoma",
+"Vistoria de imóveis para locação",
+"Serviços de engenharia/arquitetura simples (laudos, plantas)",
+"Consultoria em sustentabilidade para empresas locais",
+"Preparação de processos seletivos (RH freelance)",
+"Serviços de segurança do trabalho (se técnico habilitado)",
+"Assessoria em licitações para pequenas empresas",
+"Gestão financeira terceirizada (fluxo de caixa)",
+"Planejamento de eventos corporativos",
+"Consultoria em vendas para lojas físicas",
+"Mentoria para autônomos que estão começando",
+"Serviços de tradução simultânea em eventos",
+"Preparação de declarações de imposto de renda",
+] },
+{ cat: "Vendas & Revenda", icon: "🛍️", items: [
+"Revenda de roupas e calçados (brechó/atacado)",
+"Vender roupas usadas em boas condições (brechó pessoal)",
+"Revenda de cosméticos e perfumaria",
+"Revenda de semijoias e bijuterias",
+"Vender produtos no Mercado Livre",
+"Vender produtos na Shopee",
+"Vender itens usados no OLX e Enjoei",
+"Comprar e revender eletrônicos usados",
+"Revenda de suplementos e produtos fitness",
+"Vender produtos de catálogo (cosméticos, roupas íntimas)",
+"Sacoleira/mochileira de roupas e acessórios",
+"Vender doces e guloseimas por atacado para revendedores",
+"Revenda de produtos importados por encomenda",
+"Vender produtos artesanais em feiras",
+"Comprar em liquidação e revender com margem",
+"Vender livros usados",
+"Vender móveis restaurados",
+"Revenda de brinquedos e itens infantis usados",
+"Vender peças e acessórios automotivos usados",
+"Comércio de bebidas para eventos (revenda)",
+"Revender produtos de limpeza a granel",
+"Vender rifas e sorteios organizados (respeitando a lei)",
+"Vender flores e arranjos",
+"Vender produtos de papelaria personalizados",
+"Comércio ambulante de lanches e bebidas",
+"Vender colecionáveis (cards, action figures, moedas)",
+"Vender produtos country/rurais em feiras livres",
+"Vender frutas e verduras de produtor local",
+"Vender produtos naturais e fitoterápicos",
+"Revenda de máscaras e itens de proteção",
+"Vender ovos e produtos caseiros de granja pequena",
+"Vender kits personalizados (festa, maternidade, corporativo)",
+"Vender acessórios para celular e eletrônicos",
+"Vender produtos veganos/sem glúten artesanais",
+"Fazer sacolão de horta orgânica por assinatura",
+"Vender kits de presente com produtos regionais",
+"Revender produtos de festa personalizados sob demanda",
+"Vender acessórios para pets via encomenda",
+"Comprar em fábrica e revender roupas de cama/mesa/banho",
+] },
+{ cat: "Alimentação & Culinária", icon: "🍰", items: [
+"Fazer marmitas fitness e vender por assinatura",
+"Vender salgados para festas e eventos",
+"Fazer bolos e doces por encomenda",
+"Vender marmitas congeladas",
+"Fazer brigadeiros gourmet para festas",
+"Vender bolo no pote",
+"Fazer e vender pães artesanais",
+"Vender lanches naturais para escritórios",
+"Fazer catering para pequenos eventos",
+"Vender comida japonesa caseira (temaki, sushi)",
+"Fazer conservas e geleias artesanais",
+"Vender produtos de padaria caseira (cookies, muffins)",
+"Fazer refeições congeladas para idosos e famílias corridas",
+"Vender café especial e produtos de cafeteria",
+"Fazer doces para casamento e festa infantil",
+"Vender picolés e sorvetes artesanais",
+"Fazer churros e vender em eventos",
+"Vender pipoca gourmet",
+"Fazer massas frescas artesanais",
+"Vender kits de churrasco prontos",
+"Fazer comida vegana/vegetariana sob encomenda",
+"Vender molhos e temperos caseiros",
+"Fazer tortas doces e salgadas por encomenda",
+"Vender bebidas naturais (sucos, chás, kombucha)",
+"Fazer cesta de café da manhã surpresa",
+"Vender snacks saudáveis (barrinhas, mix de castanhas)",
+"Fazer festa do pote (doces variados)",
+"Vender comida congelada low carb",
+"Prestar serviço de chef particular em domicílio",
+"Fazer bolos personalizados temáticos",
+"Vender panetones e produtos sazonais de fim de ano",
+"Fazer produtos sem lactose/glúten para intolerantes",
+] },
+{ cat: "Beleza & Estética", icon: "💅", items: [
+"Fazer unhas em domicílio ou home studio (manicure/pedicure)",
+"Fazer design de sobrancelhas",
+"Aplicar cílios em domicílio",
+"Fazer maquiagem para festas e eventos",
+"Cortar e pentear cabelo em domicílio",
+"Fazer tranças e penteados afro",
+"Oferecer massagem relaxante",
+"Fazer depilação em domicílio",
+"Vender produtos de skincare por assinatura",
+"Fazer limpeza de pele básica",
+"Oferecer serviço de barbeiro em domicílio",
+"Fazer alongamento de unhas em gel/fibra",
+"Trabalhar como consultora de beleza (venda + dicas)",
+"Fazer micropigmentação (se habilitado)",
+"Vender kits de maquiagem personalizados",
+"Fazer automaquiagem — aulas particulares",
+"Oferecer day spa caseiro (pacote de beleza)",
+"Fazer coloração e tratamento capilar em domicílio",
+"Vender produtos naturais para cabelo cacheado",
+"Fazer nail art personalizada para clientes",
+"Oferecer pacote noiva (cabelo + maquiagem)",
+"Fazer drenagem linfática",
+"Trabalhar com bronzeamento natural/spray tan",
+"Vender perucas e apliques",
+"Ensinar automaquiagem em pequenos grupos",
+"Fazer sobrancelha com henna",
+"Oferecer serviços de estética masculina (barba, pele)",
+"Revender aparelhos de estética portáteis",
+] },
+{ cat: "Aulas & Educação", icon: "📚", items: [
+"Dar aulas particulares de reforço escolar",
+"Dar aulas de inglês ou espanhol",
+"Dar aulas de matemática para vestibular/Enem",
+"Dar aulas de música (violão, piano, canto)",
+"Dar aulas de dança",
+"Dar aulas de artesanato",
+"Dar aulas de culinária",
+"Dar mentoria para concursos públicos",
+"Dar aulas de informática básica para idosos",
+"Ensinar costura e corte e costura",
+"Dar aulas de yoga ou pilates",
+"Dar aulas particulares de redação (Enem/vestibular)",
+"Oferecer curso preparatório para concursos online",
+"Dar aulas de fotografia para iniciantes",
+"Dar aulas de programação básica",
+"Dar aulas de design gráfico",
+"Ensinar libras (língua de sinais)",
+"Dar aulas de teatro e oratória",
+"Dar reforço escolar em grupo (pequenas turmas)",
+"Dar aulas de robótica para crianças",
+"Oferecer curso de finanças pessoais para leigos",
+"Dar aulas de defesa pessoal",
+"Ensinar crochê e tricô",
+"Dar aulas de canto para iniciantes",
+"Ensinar maquiagem profissional",
+"Dar aulas de natação (se habilitado/certificado)",
+"Dar aulas de xadrez",
+"Ensinar edição de vídeo para iniciantes",
+] },
+{ cat: "Conteúdo & Redes Sociais", icon: "🎥", items: [
+"Criar conteúdo no TikTok e monetizar",
+"Criar conteúdo no Instagram e vender publi",
+"Criar canal no YouTube sobre um nicho específico",
+"Fazer unboxing e resenha de produtos",
+"Criar conteúdo educativo em vídeos curtos",
+"Virar creator de um nicho (finanças, receitas, humor)",
+"Fazer podcast e monetizar com patrocínio",
+"Vender espaço para publi em stories",
+"Fazer parcerias com marcas locais como microinfluenciador",
+"Criar conteúdo de bastidores de profissão (dia a dia)",
+"Fazer lives de vendas (venda ao vivo)",
+"Criar conteúdo tutorial (como fazer, passo a passo)",
+"Documentar uma jornada (perda de peso, empreendedorismo)",
+"Criar memes e conteúdo de humor de nicho",
+"Cobrir eventos locais para páginas da cidade",
+"Fazer resumos de livros em vídeo",
+"Criar conteúdo ASMR",
+"Fazer reviews de restaurantes locais",
+"Criar conteúdo sobre maternidade/paternidade",
+"Criar conteúdo motivacional/desenvolvimento pessoal",
+"Fazer parcerias de troca (produto por divulgação)",
+"Vender fotos e vídeos autorais para bancos de conteúdo",
+"Criar séries de conteúdo educativo sobre um hobby",
+"Ser revendedor de cursos como afiliado divulgando conteúdo",
+"Criar conteúdo local (dicas da cidade, achadinhos)",
+"Fazer cobertura de shows e eventos culturais",
+] },
+{ cat: "Serviços Domésticos & Manutenção", icon: "🔧", items: [
+"Prestar serviço de faxina residencial",
+"Fazer limpeza pós-obra",
+"Oferecer serviço de passadoria de roupas",
+"Fazer pequenos reparos elétricos (eletricista autônomo)",
+"Fazer pequenos reparos hidráulicos (encanador autônomo)",
+"Montar móveis (montador autônomo)",
+"Prestar serviço de pintura residencial",
+"Fazer jardinagem e manutenção de quintais",
+"Fazer limpeza de piscinas",
+"Prestar serviço de dedetização básica",
+"Fazer manutenção de ar-condicionado",
+"Lavar e higienizar estofados e colchões",
+"Fazer limpeza de vidros e fachadas",
+"Prestar serviço de marcenaria e pequenos consertos",
+"Fazer instalação de cortinas e persianas",
+"Consertar eletrodomésticos pequenos",
+"Fazer manutenção de bicicletas",
+"Prestar serviço de chaveiro",
+"Fazer limpeza e organização de garagens/depósitos",
+"Cuidar de horta e jardim vertical para clientes",
+"Fazer instalação de prateleiras e pequenos móveis",
+"Oferecer serviço de mudança e carretos pequenos",
+"Fazer manutenção preventiva de portões eletrônicos",
+"Trabalhar como diarista especializada em organização",
+"Fazer serviços de gesso e acabamento simples",
+"Consertar telhados e calhas (pequenos reparos)",
+"Fazer instalação de papel de parede",
+"Fazer serviços de tapeçaria e reforma de estofados",
+"Cuidar de manutenção de quintais e áreas externas de condomínios",
+"Prestar serviço de limpeza de caixa d'água",
+"Fazer instalação e manutenção de painéis solares residenciais",
+"Fazer limpeza de calhas e caixas de gordura",
+"Prestar serviço de impermeabilização de lajes e caixas d'água",
+"Fazer manutenção de portas e janelas (ferragens, dobradiças)",
+"Oferecer serviço de organização e etiquetagem de armários",
+] },
+{ cat: "Transporte & Logística", icon: "🚗", items: [
+"Trabalhar como motorista de aplicativo (Uber, 99)",
+"Fazer entregas por aplicativo (iFood, Rappi)",
+"Trabalhar como motoboy autônomo",
+"Fazer fretes e mudanças pequenas com carro/van",
+"Oferecer transporte escolar",
+"Fazer entregas de encomendas locais (courier)",
+"Buscar e levar crianças na escola (transporte particular)",
+"Alugar carro próprio para aplicativos (locação)",
+"Trabalhar como guia de turismo local",
+"Fazer city tour de bicicleta ou van",
+"Oferecer serviço de motorista particular por hora",
+"Fazer entrega de marmitas e refeições",
+"Fazer transporte de pets (pet taxi)",
+"Trabalhar como despachante de encomendas para lojas online",
+"Fazer transporte de idosos a consultas médicas",
+"Oferecer serviço de van para eventos e festas",
+"Fazer entregas noturnas (farmácias, restaurantes)",
+"Trabalhar como cicloentregador",
+"Oferecer serviço de guincho pequeno/reboque",
+"Fazer logística reversa para lojas (coleta de trocas)",
+"Trabalhar como motorista de aplicativo de cargas",
+"Fazer transporte compartilhado para trabalho (carona paga)",
+"Oferecer serviço de leva e traz de compras de mercado",
+"Fazer entrega programada de água e gás",
+"Oferecer serviço de retirada e entrega de roupa em lavanderia",
+"Fazer coleta de material reciclável para revenda",
+"Oferecer serviço de motoboy para documentos e cartório",
+"Fazer transporte de cargas pequenas entre cidades vizinhas",
+] },
+{ cat: "Eventos & Sazonais", icon: "🎉", items: [
+"Trabalhar como decorador de festas",
+"Alugar itens de decoração (mesas, painéis, luzes)",
+"Fazer aluguel de fantasias em datas comemorativas",
+"Trabalhar como animador de festas infantis",
+"Vender e montar painéis de balão",
+"Trabalhar como DJ para eventos pequenos",
+"Fazer cobertura fotográfica de casamentos e formaturas",
+"Vender lembrancinhas personalizadas para festas",
+"Trabalhar como cerimonialista de eventos",
+"Oferecer serviço de garçom/garçonete para eventos",
+"Fazer aluguel de louças e utensílios para festas",
+"Vender enfeites de Natal e decoração sazonal",
+"Trabalhar como Papai Noel ou personagem em eventos",
+"Fazer ovos de Páscoa artesanais para vender",
+"Vender fantasias e adereços de Carnaval",
+"Organizar chá de bebê e chá de panela",
+"Fazer buffet infantil para festas",
+"Trabalhar como segurança de eventos (se certificado)",
+"Fazer aluguel de brinquedos infláveis para festas",
+"Vender kits de presente para Dia das Mães/Pais/Namorados",
+"Fazer arranjos florais para casamentos",
+"Trabalhar como fotógrafo de formatura e eventos escolares",
+"Organizar bazares e feiras de artesanato locais",
+"Vender ingressos e organizar pequenos eventos comunitários",
+"Fazer registro em vídeo de aniversários e bodas",
+"Trabalhar como recepcionista freelancer para eventos corporativos",
+"Montar cabines de fotos (photo booth) para festas",
+"Vender kits temáticos de festa junina",
+] },
+{ cat: "Pet & Animais", icon: "🐾", items: [
+"Oferecer serviço de passeio com cães (dog walker)",
+"Fazer hospedagem de pets em casa (pet sitter)",
+"Trabalhar como banho e tosa em domicílio",
+"Vender petiscos naturais para cães e gatos",
+"Fazer adestramento básico de cães",
+"Vender roupinhas e acessórios pet",
+"Oferecer serviço de creche para cães durante o dia",
+"Fazer fotos temáticas de pets",
+"Vender ração e produtos pet por assinatura",
+"Cuidar de pets de vizinhos durante viagens",
+"Fazer limpeza de aquários",
+"Criar e vender animais de pequeno porte (com responsabilidade e legislação)",
+"Oferecer serviço de táxi para pets a consultas veterinárias",
+"Fazer camas e casinhas artesanais para pets",
+"Vender bolos e petiscos de aniversário para pets",
+"Oferecer curso online sobre cuidados com pets",
+"Trabalhar como auxiliar veterinário freelance (se habilitado)",
+"Fazer enxoval personalizado para pets",
+"Vender coleiras e guias artesanais",
+"Fazer serviço de tosa higiênica a domicílio",
+] },
+{ cat: "Artesanato & Criação", icon: "🎨", items: [
+"Fazer e vender velas artesanais",
+"Fazer e vender sabonetes artesanais",
+"Confeccionar bijuterias e semijoias artesanais",
+"Fazer crochê e tricô para vender",
+"Fazer bordados personalizados",
+"Confeccionar quadros e artes decorativas",
+"Fazer resina artística (bandejas, porta-copos, joias)",
+"Confeccionar convites e papelaria personalizada",
+"Fazer arranjos de flores artificiais e permanentes",
+"Confeccionar sabonetes e cosméticos naturais",
+"Fazer cerâmica e vender peças artesanais",
+"Confeccionar produtos em feltro (chaveiros, bonecos)",
+"Fazer marcenaria artesanal (porta-retratos, caixas)",
+"Confeccionar roupas e acessórios sob medida",
+"Fazer scrapbooking e álbuns personalizados",
+"Confeccionar bolsas e carteiras artesanais",
+"Fazer amigurumi (bonecos de crochê)",
+"Confeccionar decoração em MDF pintado à mão",
+"Fazer sabonetes líquidos e velas aromáticas para revenda",
+"Confeccionar produtos personalizados com nome (canecas, camisetas)",
+"Fazer customização de roupas e tênis",
+"Confeccionar terrários e arranjos de plantas",
+"Fazer origami decorativo para vender",
+"Confeccionar produtos de couro artesanal",
+"Fazer pintura em tecido e personalização de enxovais",
+"Confeccionar produtos com material reciclado (upcycling)",
+"Fazer litbox e quadros com luz personalizados",
+"Confeccionar bonés e chapéus personalizados",
+] },
+{ cat: "Aluguel de Bens & Imóveis", icon: "🏠", items: [
+"Alugar um cômodo ou quarto extra (Airbnb/temporada)",
+"Alugar a garagem ou vaga de estacionamento",
+"Alugar ferramentas e equipamentos que possui",
+"Alugar roupas de festa (vestidos, ternos)",
+"Alugar equipamentos fotográficos",
+"Alugar espaço para eventos pequenos (quintal, salão)",
+"Alugar utensílios de festa (mesas, cadeiras, louças)",
+"Alugar imóvel comercial pequeno (kitnet, sala)",
+"Alugar carro particular quando não estiver usando",
+"Alugar bicicleta ou equipamento esportivo",
+"Alugar instrumentos musicais",
+"Alugar itens de bebê (carrinho, berço) por temporada",
+"Disponibilizar imóvel para coworking eventual",
+"Alugar depósito ou self storage próprio",
+"Alugar trailer ou reboque",
+"Alugar equipamentos de camping",
+"Sublocar parte de terreno para eventos ou armazenamento",
+"Alugar sala comercial para consultórios por hora",
+"Alugar jardim/quintal para ensaios fotográficos",
+"Alugar itens esportivos (SUP, caiaque, bike)",
+"Alugar barraca e itens de acampamento",
+"Alugar espaço de armazenamento em casa (guarda-móveis)",
+] },
+{ cat: "Tecnologia & Suporte", icon: "🖥️", items: [
+"Fazer manutenção de computadores e notebooks",
+"Instalar e configurar redes Wi-Fi residenciais",
+"Fazer suporte técnico remoto para pequenos negócios",
+"Recuperar dados de HD e pen drives",
+"Fazer formatação e limpeza de computadores",
+"Instalar sistemas de câmeras de segurança residenciais",
+"Consertar celulares (troca de tela, bateria)",
+"Configurar smart TVs e streaming para clientes",
+"Fazer montagem de PCs personalizados (gamer, trabalho)",
+"Ensinar uso básico de smartphone para idosos",
+"Fazer backup e organização de arquivos digitais para clientes",
+"Configurar automação residencial simples (casa inteligente)",
+"Prestar suporte remoto de TI por assinatura mensal",
+"Criar sites simples em construtores no-code",
+"Fazer manutenção preventiva de impressoras",
+"Configurar lojas virtuais para pequenos empreendedores",
+"Fazer instalação de antenas e sinal de internet rural",
+"Consertar consoles de videogame",
+"Fazer curadoria e organização de fotos digitais de clientes",
+"Prestar consultoria em segurança digital básica",
+"Fazer migração e organização de e-mails/agenda para clientes",
+"Configurar sistemas de PDV (ponto de venda) para pequenos comércios",
+"Fazer manutenção de roteadores e redes de pequenas empresas",
+"Ensinar uso de ferramentas de IA para autônomos",
+"Fazer clonagem e upgrade de HD/SSD em computadores",
+] },
+{ cat: "Produção Própria & Agro", icon: "🌱", items: [
+"Cultivar horta e vender hortaliças excedentes",
+"Criar galinhas caipiras e vender ovos",
+"Fazer mudas de plantas e vender",
+"Produzir mel e vender (apicultura de pequena escala)",
+"Cultivar ervas e temperos para venda",
+"Fazer compostagem e vender adubo orgânico",
+"Produzir e vender queijos e derivados do leite (com regularização)",
+"Criar minhocário e vender húmus",
+"Cultivar cogumelos comestíveis para venda",
+"Produzir conservas de frutas e legumes da própria horta",
+"Vender excedente de plantação para restaurantes locais",
+"Fazer jardinagem vertical e vender kits de cultivo",
+"Produzir sabão caseiro a partir de óleo reciclado",
+"Criar pequenos animais para venda (com legislação local)",
+"Vender flores cultivadas em casa",
+"Fazer viveiro de mudas frutíferas",
+"Vender sementes selecionadas para hortas",
+"Produzir geleias e doces da fruta da estação",
+"Fazer extração e venda de óleos essenciais caseiros",
+"Vender plantas ornamentais e suculentas",
+] },
+{ cat: "Cuidados & Assistência", icon: "🤝", items: [
+"Trabalhar como cuidador(a) de idosos",
+"Trabalhar como babá ou cuidador infantil",
+"Oferecer acompanhamento terapêutico (se habilitado)",
+"Fazer companhia e acompanhamento a idosos em consultas",
+"Trabalhar como doula ou apoio à maternidade",
+"Oferecer serviço de babá noturna",
+"Fazer plantão de cuidados para pessoas com necessidades especiais",
+"Trabalhar como acompanhante hospitalar",
+"Oferecer serviço de cuidados pós-cirúrgicos básicos",
+"Fazer apoio escolar para crianças com dificuldades de aprendizagem",
+"Trabalhar como monitor de recreação infantil",
+"Oferecer suporte para tarefas domésticas de idosos",
+"Trabalhar como cuidador de pets e idosos combinados",
+"Prestar serviço de leitura e companhia para idosos",
+"Trabalhar como assistente pessoal para pessoas com mobilidade reduzida",
+"Oferecer acompanhamento em viagens para idosos",
+"Trabalhar como monitor de colônia de férias",
+"Fazer plantão noturno para famílias com recém-nascidos",
+"Oferecer apoio psicopedagógico (se formado)",
+"Trabalhar como cuidador temporário durante férias dos pais",
+"Fazer grupo de apoio para famílias cuidadoras",
+"Oferecer serviço de organização de rotina para famílias",
+"Prestar apoio educacional em reforço domiciliar",
+"Trabalhar como auxiliar em creches parceiras",
+"Oferecer serviço de acompanhamento a exames e retornos médicos",
+"Trabalhar como cuidador(a) volante para condomínios (plantão sob chamada)",
+] },
+{ cat: "Escrita, Tradução & Idiomas", icon: "✍️", items: [
+"Trabalhar como redator freelance para blogs e sites",
+"Fazer tradução de textos e documentos",
+"Escrever e vender e-books próprios",
+"Fazer ghostwriting (escrever por outra pessoa)",
+"Escrever posts e legendas para redes sociais de clientes",
+"Trabalhar como copywriter para anúncios",
+"Fazer revisão ortográfica e gramatical de textos",
+"Escrever roteiros para vídeos e podcasts",
+"Trabalhar como redator de currículos e cartas",
+"Fazer legendagem de vídeos em outro idioma",
+"Escrever conteúdo técnico (manuais, tutoriais)",
+"Trabalhar como intérprete em eventos (se fluente)",
+"Escrever biografias e histórias de família sob encomenda",
+"Fazer localização de conteúdo para outros idiomas",
+"Escrever descrições de produtos para e-commerces",
+"Dar aulas de redação para concursos e vestibulares",
+"Escrever roteiros de discursos e apresentações",
+"Trabalhar como colunista freelance para portais locais",
+"Escrever conteúdo de SEO para sites",
+"Fazer resumos e fichamentos acadêmicos sob encomenda",
+] },
+{ cat: "Renda Passiva & Pequenos Negócios", icon: "💹", items: [
+"Investir em CDBs e Tesouro Direto para gerar renda de juros",
+"Alugar imóvel próprio (quarto, kitnet, imóvel inteiro)",
+"Criar um e-book e vender continuamente em plataforma própria",
+"Montar uma máquina de vendas automáticas (vending machine)",
+"Investir em fundos imobiliários (FIIs) para receber aluguéis mensais",
+"Criar um curso online gravado uma vez e vender recorrente",
+"Licenciar fotos e vídeos autorais para uso comercial",
+"Criar um aplicativo simples com assinatura mensal",
+"Montar máquina de doces ou snacks em condomínios (comodato)",
+"Investir em ações que pagam dividendos",
+"Criar um site de nicho monetizado com anúncios",
+"Alugar equipamentos parados (furadeira, betoneira, andaime)",
+"Criar um clube de assinatura de produtos (caixa mensal)",
+"Emprestar dinheiro via plataformas de investimento P2P reguladas",
+"Criar conteúdo evergreen no YouTube que gera receita contínua",
+"Vender templates e temas para sites (WordPress, Canva)",
+"Registrar uma marca/produto e licenciar o uso",
+"Investir em cotas de consórcio contemplado para revenda",
+"Criar um grupo de assinatura paga com conteúdo exclusivo (Patreon-like)",
+"Montar parceria de comissão com vendedores (revenda em rede)",
+] },
+];
+
+
+/* ============ DADOS ============ */
+const METHODS = [
+{ t:"Regra 50-30-20", ic:"🧮", d:"Divida sua renda líquida em três partes: até 50% para necessidades (moradia, contas, mercado), até 30% para desejos (lazer, compras) e pelo menos 20% para poupança e investimento. É a régua que o Painel financeiro desta Central usa pra te dar o status do mês." },
+{ t:"Método das caixinhas (potes)", ic:"🫙", d:"Divida o dinheiro assim que ele entra em \"potes\" — físicos ou digitais (caixinhas de banco/carteira) — um pra cada objetivo: emergência, viagem, reforma. O que já está separado por objetivo é bem mais difícil de gastar à toa." },
+{ t:"Pague-se primeiro", ic:"🔒", d:"No dia em que a renda cai, transfira a parte da poupança/investimento antes de pagar qualquer outra coisa. Trate o seu \"eu do futuro\" como a primeira conta a ser paga no mês, não a última." },
+{ t:"Contas separadas por objetivo", ic:"🏦", d:"Tenha uma conta ou carteira digital exclusiva pra cada meta (reserva de emergência, viagem, entrada de um bem). Ver o valor crescer separado do dinheiro do dia a dia ajuda a não misturar e não gastar sem querer." },
+{ t:"Regra do dia sem gastar", ic:"🚫", d:"Escolha 1 ou 2 dias fixos por semana em que você não gasta nada além do essencial (nada de delivery, nada por impulso). Parece pouco, mas junta rápido até o fim do mês." },
+{ t:"Arredondamento automático", ic:"🪙", d:"Muitos bancos e carteiras digitais oferecem a opção de arredondar suas compras e guardar o troco automaticamente. Ative essa função uma vez e deixe o hábito trabalhar sozinho." },
+{ t:"Revisão semanal de 10 minutos", ic:"🗓️", d:"Separe 10 minutos toda semana, sempre no mesmo dia e horário, pra olhar o extrato, comparar com o planejado e ajustar o que for preciso antes que o problema cresça." },
+{ t:"Lista de compras com orçamento fixo", ic:"📝", d:"Antes de ir ao mercado ou fazer qualquer compra, defina um valor máximo e faça uma lista. Decidir com fome, sem lista ou no impulso é a maior causa de gasto fora do orçamento." },
+{ t:"Faxina de assinaturas", ic:"🧹", d:"A cada 3 meses, revise tudo que é cobrado automaticamente no cartão (streamings, apps, planos). Cancele ou renegocie o que você não usa — é dinheiro saindo no piloto automático." },
+];
+
+const INVEST_GUIDE = [
+{ t:"CDI", ic:"🧭", tag:"Referência", tagClass:"tag-neutral",
+  d:"O CDI (Certificado de Depósito Interbancário) é a taxa que os bancos usam pra emprestar dinheiro entre si de um dia pro outro. Ele não é um investimento em si — é o \"termômetro\" mais usado da renda fixa pós-fixada no Brasil. Quando você vê um CDB que paga \"110% do CDI\", é a esse índice que ele se refere." },
+{ t:"CDB", ic:"🏦", tag:"Baixo a médio risco", tagClass:"tag-risk-baixo",
+  d:"Certificado de Depósito Bancário: você empresta dinheiro pro banco emissor em troca de juros. Pode ser pré-fixado (taxa combinada na hora da compra) ou pós-fixado (atrelado ao CDI). Conta com garantia do FGC até o limite vigente por CPF e por instituição — confira o valor atualizado antes de investir. Imposto de Renda regressivo conforme o prazo." },
+{ t:"Tesouro Direto", ic:"🏛️", tag:"Baixo risco", tagClass:"tag-risk-baixo",
+  d:"Programa do Tesouro Nacional pra comprar títulos públicos federais direto pelo site, a partir de valores baixos. Principais tipos: Tesouro Selic (pós-fixado, pouca oscilação, bom pra reserva de emergência), Tesouro Prefixado (taxa fixada na compra) e Tesouro IPCA+ (rende a inflação mais um juro real, protege o poder de compra no longo prazo)." },
+{ t:"LCI / LCA", ic:"🌾", tag:"Baixo risco", tagClass:"tag-risk-baixo",
+  d:"Letras de Crédito Imobiliário e do Agronegócio financiam esses dois setores. Para a pessoa física, a grande vantagem é a isenção de Imposto de Renda. Costumam ter um prazo de carência (o dinheiro fica indisponível por um tempo mínimo) e também contam com garantia do FGC até o limite vigente." },
+{ t:"ETFs", ic:"📦", tag:"Risco médio", tagClass:"tag-risk-medio",
+  d:"Fundos negociados em bolsa que replicam um índice, como o Ibovespa ou o S&P 500. Comprar uma cota é como comprar uma cesta inteira de ativos de uma vez — ajuda a diversificar sem precisar escolher ação por ação. O valor sobe e desce junto com o mercado." },
+{ t:"Ações", ic:"📈", tag:"Risco alto", tagClass:"tag-risk-alto",
+  d:"Ao comprar uma ação, você vira sócio(a) de uma fração pequena de uma empresa. O retorno pode vir da valorização do papel e do pagamento de dividendos. É a classe com maior potencial de ganho no longo prazo, mas também a mais volátil — exige estudo, paciência e tolerância à oscilação." },
+];
+
+const QUIZ_OPTIONS = [
+{ l:"Tenho carro ou moto disponível", cats:["Transporte & Logística"] },
+{ l:"Gosto de redes sociais / criar conteúdo", cats:["Conteúdo & Redes Sociais","Internet & Digital"] },
+{ l:"Tenho habilidade manual (artesanato, costura, reparos)", cats:["Artesanato & Criação","Serviços Domésticos & Manutenção"] },
+{ l:"Tenho jeito pra cozinhar", cats:["Alimentação & Culinária"] },
+{ l:"Gosto de cuidar de pessoas ou de animais", cats:["Cuidados & Assistência","Pet & Animais"] },
+{ l:"Tenho experiência profissional que dá pra vender como serviço", cats:["Freelance & Serviços Profissionais"] },
+{ l:"Tenho um cômodo, carro ou equipamento parado", cats:["Aluguel de Bens & Imóveis","Renda Passiva & Pequenos Negócios"] },
+{ l:"Curto ensinar o que sei", cats:["Aulas & Educação"] },
+];
+
+const CHALLENGE_TASKS = [
+"Anote todos os gastos de hoje, sem exceção",
+"Defina 1 meta financeira para os próximos 3 meses",
+"Revise seus extratos dos últimos 30 dias",
+"Cancele ou negocie uma assinatura que você não usa",
+"Escolha 3 ideias de renda extra da lista e leia sobre elas",
+"Separe hoje o valor do desafio antes de qualquer outro gasto",
+"Pesquise o preço de 3 itens do seu mercado em 2 lugares diferentes",
+"Hoje é dia sem gastos: nada além do essencial",
+"Calcule quanto você gastou com delivery/apps este mês",
+"Leia sobre um tipo de investimento no Guia de Investimentos",
+"Liste suas contas fixas (aluguel, luz, água, internet)",
+"Avalie se pode negociar uma conta fixa (internet, seguro, plano)",
+"Defina um valor máximo de gastos com lazer para a semana",
+"Teste a Calculadora de Metas com um sonho seu",
+"Pesquise se algum item parado em casa pode ser vendido",
+"Fotografe e anuncie 1 item parado em casa",
+"Comece sua reserva de emergência — nem que seja com R$50",
+"Compare o rendimento da poupança com o do Tesouro Selic",
+"Escolha uma ideia de renda extra e defina o primeiro passo",
+"Converse com alguém da família sobre metas em comum",
+"Anote 3 gastos por impulso que dá pra cortar esse mês",
+"Separe os documentos pra declarar Imposto de Renda, se for o caso",
+"Pesquise uma habilidade sua que poderia virar serviço pago",
+"Defina um dia fixo do mês pra revisar as finanças",
+"Estabeleça um limite de uso do cartão de crédito no mês",
+"Avalie 1 conta ou cartão com tarifa que pode ser eliminada",
+"Liste seus 5 maiores gastos do mês e questione cada um",
+"Planeje como vai usar o dinheiro guardado no desafio",
+"Escreva 1 meta financeira pra próximos 12 meses",
+"Comemore: você completou o desafio! Reveja o que aprendeu",
+];
+
+const CHECKLIST_ITEMS = [
+"Pagar contas fixas até o vencimento",
+"Lançar todos os gastos da semana",
+"Separar o valor da poupança/investimento",
+"Testar 1 ideia nova de renda extra",
+"Revisar assinaturas e cortar o que não usa",
+"Atualizar a planilha de controle financeiro",
+];
+
+/* ============ ESTADO ============ */
+const STORAGE_KEY = "cre_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return Object.assign(defaultState(), JSON.parse(raw));
+  }catch(e){}
+  return defaultState();
+}
+function defaultState(){
+  return {
+    favorites: [],
+    planner: { renda:"", necessidades:"", desejos:"", guardado:"" },
+    challenge: new Array(30).fill(false),
+    checklist: new Array(CHECKLIST_ITEMS.length).fill(false),
+    smart: { esp:"", val:"", prazo:"", como:"" },
+  };
+}
+let state = loadState();
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ============ HELPERS ============ */
+function brl(n){
+  n = Number(n); if(!isFinite(n)) n = 0;
+  return "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function num(v){ const n = parseFloat(String(v).replace(",",".")); return isFinite(n) ? n : 0; }
+function norm(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+/* ============ NAVEGAÇÃO ============ */
+function switchTab(name){
+  document.querySelectorAll(".screen").forEach(s=> s.classList.toggle("active", s.dataset.screen===name));
+  document.querySelectorAll(".tab-btn").forEach(b=> b.classList.toggle("active", b.dataset.tab===name));
+  document.getElementById("appMain").scrollTop = 0;
+}
+document.getElementById("tabBar").addEventListener("click", e=>{
+  const btn = e.target.closest(".tab-btn"); if(!btn) return;
+  switchTab(btn.dataset.tab);
+});
+document.querySelectorAll("[data-goto]").forEach(el=>{
+  el.addEventListener("click", ()=> switchTab(el.dataset.goto));
+});
+
+/* ============ IDEIAS ============ */
+let activeChip = "Todas";
+let quizCats = null;
+
+function allCategories(){ return IDEAS_DB.map(c=>c.cat); }
+
+function renderQuiz(){
+  const wrap = document.getElementById("quizOpts");
+  wrap.innerHTML = QUIZ_OPTIONS.map((o,i)=>`
+    <label class="quiz-opt" data-i="${i}">
+      <input type="checkbox" data-i="${i}"> ${esc(o.l)}
+    </label>`).join("");
+  wrap.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      cb.closest(".quiz-opt").classList.toggle("checked", cb.checked);
+    });
+  });
+}
+document.getElementById("quizBtn").addEventListener("click", ()=>{
+  const checked = [...document.querySelectorAll('#quizOpts input:checked')].map(cb=>QUIZ_OPTIONS[+cb.dataset.i]);
+  if(checked.length===0){ quizCats=null; }
+  else{
+    const set = new Set();
+    checked.forEach(o=> o.cats.forEach(c=>set.add(c)));
+    quizCats = [...set];
+  }
+  activeChip = quizCats ? "✨ Pra você" : "Todas";
+  renderChips();
+  renderIdeas();
+  document.getElementById("ideaList").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+function renderChips(){
+  const cats = allCategories();
+  const chips = ["Todas","❤ Favoritas"].concat(quizCats?["✨ Pra você"]:[]).concat(cats);
+  const row = document.getElementById("catChips");
+  row.innerHTML = chips.map(c=> `<button class="chip ${c===activeChip?"active":""}" data-chip="${esc(c)}">${esc(c)}</button>`).join("");
+  row.querySelectorAll(".chip").forEach(ch=>{
+    ch.addEventListener("click", ()=>{
+      activeChip = ch.dataset.chip;
+      if(activeChip !== "✨ Pra você") { /* keep quizCats stored but chip not shown unless reselected via quiz */ }
+      renderChips();
+      renderIdeas();
+    });
+  });
+}
+
+function renderIdeas(){
+  const q = norm(document.getElementById("ideaSearch").value || "");
+  const list = document.getElementById("ideaList");
+  let html = "";
+  let count = 0;
+  IDEAS_DB.forEach((cat, ci)=>{
+    if(activeChip === "✨ Pra você" && quizCats && !quizCats.includes(cat.cat)) return;
+    if(activeChip !== "Todas" && activeChip !== "❤ Favoritas" && activeChip !== "✨ Pra você" && activeChip !== cat.cat) return;
+    let catHtml = "";
+    cat.items.forEach((item, ii)=>{
+      const id = ci+"-"+ii;
+      const isFav = state.favorites.includes(id);
+      if(activeChip === "❤ Favoritas" && !isFav) return;
+      if(q && !norm(item).includes(q)) return;
+      catHtml += `<div class="idea-item">
+        <span class="ic">${cat.icon}</span>
+        <span class="txt">${esc(item)}</span>
+        <button class="fav-btn ${isFav?"active":""}" data-id="${id}" aria-label="Favoritar">${isFav?"♥":"♡"}</button>
+      </div>`;
+      count++;
+    });
+    if(catHtml){
+      html += `<div class="idea-cat-label">${cat.icon} ${esc(cat.cat)}</div>` + catHtml;
+    }
+  });
+  document.getElementById("ideaCount").textContent = count;
+  list.innerHTML = count ? html : `<div class="empty-state">Nenhuma ideia encontrada. Tente outra busca ou categoria.</div>`;
+  list.querySelectorAll(".fav-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const id = b.dataset.id;
+      const idx = state.favorites.indexOf(id);
+      if(idx>-1) state.favorites.splice(idx,1); else state.favorites.push(id);
+      saveState();
+      renderIdeas();
+      renderHomeStats();
+    });
+  });
+}
+document.getElementById("ideaSearch").addEventListener("input", renderIdeas);
+
+/* ============ ACCORDIONS (métodos + investimentos) ============ */
+function buildAccordion(container, items){
+  container.innerHTML = items.map((it,i)=>`
+    <div class="accordion-item" data-i="${i}">
+      <button class="accordion-head">
+        <span class="t">${it.ic?`<span class="ic">${it.ic}</span>`:""} ${esc(it.t)}</span>
+        <span class="chev">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-body-in">
+        ${it.tag?`<div class="tag-row"><span class="tag ${it.tagClass||"tag-neutral"}">${esc(it.tag)}</span></div>`:""}
+        <div>${esc(it.d)}</div>
+      </div></div>
+    </div>`).join("");
+  container.querySelectorAll(".accordion-item").forEach(el=>{
+    el.querySelector(".accordion-head").addEventListener("click", ()=>{
+      el.classList.toggle("open");
+    });
+  });
+}
+
+/* ============ PLANEJAMENTO / PAINEL FINANCEIRO ============ */
+function bindPlannerInputs(){
+  const map = { pRenda:"renda", pNecessidades:"necessidades", pDesejos:"desejos", pGuardado:"guardado" };
+  Object.keys(map).forEach(id=>{
+    const el = document.getElementById(id);
+    el.value = state.planner[map[id]];
+    el.addEventListener("input", ()=>{
+      state.planner[map[id]] = el.value;
+      saveState();
+      renderPlanner();
+      renderHomeStats();
+    });
+  });
+}
+function renderPlanner(){
+  const renda = num(state.planner.renda);
+  const nec = num(state.planner.necessidades);
+  const des = num(state.planner.desejos);
+  const gua = num(state.planner.guardado);
+  const box = document.getElementById("plannerResult");
+  if(renda<=0){
+    box.innerHTML = `<div class="card-title"><span class="ic">📌</span> Resultado do mês</div><p class="muted" style="margin-top:8px">Informe sua renda mensal pra ver o retrato completo do seu mês.</p>`;
+    return;
+  }
+  const sobra = renda - nec - des - gua;
+  const total = nec+des+gua;
+  const scale = Math.max(total, renda);
+  const pctNec = scale? nec/scale*100 : 0;
+  const pctDes = scale? des/scale*100 : 0;
+  const pctGua = scale? gua/scale*100 : 0;
+  const pctSobra = scale? Math.max(sobra,0)/scale*100 : 0;
+  const pctGuaRenda = renda? gua/renda*100 : 0;
+  const pctNecRenda = renda? nec/renda*100 : 0;
+
+  let status, statusClass;
+  if(pctGuaRenda>=20 && pctNecRenda<=50){ status="No ritmo da regra 50-30-20 🎉"; statusClass="status-good"; }
+  else if(pctGuaRenda>=10){ status="No caminho — dá pra guardar um pouco mais"; statusClass="status-warn"; }
+  else { status="Atenção: sobrando pouco ou nada pra guardar"; statusClass="status-bad"; }
+
+  box.innerHTML = `
+    <div class="card-title"><span class="ic">📌</span> Resultado do mês</div>
+    <div class="result-row big" style="margin-top:10px"><span class="lab">Sobra do mês</span><span class="val" style="color:${sobra<0?"var(--danger)":"var(--primary-dark)"}">${brl(sobra)}</span></div>
+    <div class="bar-track" style="margin-top:6px">
+      <div class="bar-seg" style="width:${pctNec}%;background:var(--primary-dark)"></div>
+      <div class="bar-seg" style="width:${pctDes}%;background:var(--accent)"></div>
+      <div class="bar-seg" style="width:${pctGua}%;background:var(--success)"></div>
+      <div class="bar-seg" style="width:${pctSobra}%;background:var(--surface-2)"></div>
+    </div>
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-dot" style="background:var(--primary-dark)"></span>Necessidades · ${pctNecRenda.toFixed(0)}% da renda</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Desejos · ${(renda?des/renda*100:0).toFixed(0)}%</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--success)"></span>Guardado · ${pctGuaRenda.toFixed(0)}%</span>
+    </div>
+    <div style="margin-top:10px"><span class="status-pill ${statusClass}">${status}</span></div>
+    <p class="muted" style="margin-top:8px">Meta da regra 50-30-20: até 50% necessidades, até 30% desejos, 20%+ guardado/investido.</p>
+  `;
+}
+
+/* ============ SIMULADOR DE INVESTIMENTOS ============ */
+document.getElementById("simBtn").addEventListener("click", ()=>{
+  const inicial = num(document.getElementById("sInicial").value);
+  const aporte = num(document.getElementById("sAporte").value);
+  const taxaAno = num(document.getElementById("sTaxa").value);
+  const anos = Math.max(0, Math.round(num(document.getElementById("sPrazo").value)));
+  const months = anos*12;
+  const mRate = Math.pow(1+taxaAno/100, 1/12)-1;
+  let balance = inicial, invested = inicial;
+  const yearly = [];
+  for(let m=1;m<=months;m++){
+    balance = balance*(1+mRate) + aporte;
+    invested += aporte;
+    if(m%12===0) yearly.push(balance);
+  }
+  if(months===0) yearly.push(balance);
+  const juros = balance - invested;
+  const max = Math.max(...yearly, 1);
+  const bars = yearly.map((v,i)=> `<div class="chart-col"><div class="bar" style="height:${Math.max(4,v/max*100)}%"></div><div class="yl">Ano ${i+1}</div></div>`).join("");
+  document.getElementById("simResult").innerHTML = `
+    <div class="result-box" style="margin-top:14px">
+      <div class="result-row"><span class="lab">Total investido</span><span class="val">${brl(invested)}</span></div>
+      <div class="result-row"><span class="lab">Juros acumulados</span><span class="val" style="color:var(--success)">${brl(juros)}</span></div>
+      <div class="result-row big"><span class="lab">Valor final estimado</span><span class="val">${brl(balance)}</span></div>
+      <div class="chart-cols">${bars}</div>
+      <p class="muted" style="margin-top:2px">Simulação educativa com juros compostos e taxa fixa — a rentabilidade real varia mês a mês.</p>
+    </div>`;
+});
+
+/* ============ CALCULADORA DE METAS ============ */
+document.getElementById("goalBtn").addEventListener("click", ()=>{
+  const meta = num(document.getElementById("gMeta").value);
+  const n = Math.max(1, Math.round(num(document.getElementById("gPrazo").value)));
+  const atual = num(document.getElementById("gAtual").value);
+  const i = num(document.getElementById("gTaxa").value)/100;
+  const fvAtual = atual*Math.pow(1+i, n);
+  let pmt;
+  if(i===0) pmt = (meta-atual)/n;
+  else pmt = (meta - fvAtual) * i / (Math.pow(1+i,n)-1);
+  const box = document.getElementById("goalResult");
+  if(pmt<=0){
+    box.innerHTML = `<div class="result-box" style="margin-top:14px">
+      <div class="result-row big"><span class="lab">Boa notícia</span><span class="val" style="color:var(--success)">Meta batida!</span></div>
+      <p class="muted">Só com o valor já guardado, rendendo na taxa informada, você chega a ${brl(fvAtual)} em ${n} meses — acima da sua meta de ${brl(meta)}.</p>
+    </div>`;
+    return;
+  }
+  const totalAportado = atual + pmt*n;
+  box.innerHTML = `<div class="result-box" style="margin-top:14px">
+    <div class="result-row big"><span class="lab">Aporte mensal necessário</span><span class="val">${brl(pmt)}</span></div>
+    <div class="result-row"><span class="lab">Total que você vai aportar</span><span class="val">${brl(totalAportado)}</span></div>
+    <div class="result-row"><span class="lab">Juros estimados no período</span><span class="val" style="color:var(--success)">${brl(meta-totalAportado)}</span></div>
+    <p class="muted">Considerando ${n} meses e rentabilidade de ${(i*100).toFixed(2)}% ao mês sobre o saldo.</p>
+  </div>`;
+});
+
+/* ============ DESAFIO DE 30 DIAS ============ */
+let openDay = null;
+function renderChallenge(){
+  const grid = document.getElementById("dayGrid");
+  grid.innerHTML = state.challenge.map((done,i)=>`
+    <div class="day-cell ${done?"done":""}" data-i="${i}">
+      <span class="d">DIA ${i+1}</span>
+      <span class="v tabular">R$${i+1}</span>
+    </div>`).join("");
+  grid.querySelectorAll(".day-cell").forEach(cell=>{
+    cell.addEventListener("click", ()=>{
+      openDay = +cell.dataset.i;
+      renderDayDetail();
+    });
+  });
+  const doneCount = state.challenge.filter(Boolean).length;
+  const saved = state.challenge.reduce((s,d,i)=> s + (d?(i+1):0), 0);
+  document.getElementById("challengeProgressText").textContent = doneCount+"/30 dias";
+  document.getElementById("challengeBar").style.width = (doneCount/30*100)+"%";
+  document.getElementById("challengeSaved").textContent = brl(saved);
+
+  let streak = 0;
+  for(let i=0;i<30;i++){ if(state.challenge[i]) streak++; else break; }
+  document.getElementById("streakVal").textContent = streak;
+  document.getElementById("statDesafio").textContent = doneCount+"/30";
+}
+function renderDayDetail(){
+  const d = document.getElementById("dayDetail");
+  if(openDay===null){ d.style.display="none"; return; }
+  const i = openDay;
+  const done = state.challenge[i];
+  d.style.display = "flex";
+  d.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <b>Dia ${i+1} · guarde ${brl(i+1)}</b>
+      <span class="muted tabular">${done?"✅ concluído":"em aberto"}</span>
+    </div>
+    <div class="task">${esc(CHALLENGE_TASKS[i])}</div>
+    <button class="btn ${done?"btn-ghost":"btn-primary"}" id="dayToggleBtn">${done?"Desmarcar dia":"Marcar como concluído"}</button>
+  `;
+  document.getElementById("dayToggleBtn").addEventListener("click", ()=>{
+    state.challenge[i] = !state.challenge[i];
+    saveState();
+    renderChallenge();
+    renderDayDetail();
+    renderHomeStats();
+  });
+}
+
+/* ============ BÔNUS: checklist + SMART ============ */
+function renderChecklist(){
+  const wrap = document.getElementById("plannerChecklist");
+  wrap.innerHTML = CHECKLIST_ITEMS.map((t,i)=>`
+    <label class="quiz-opt ${state.checklist[i]?"checked":""}" data-i="${i}">
+      <input type="checkbox" data-i="${i}" ${state.checklist[i]?"checked":""}> ${esc(t)}
+    </label>`).join("");
+  wrap.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      state.checklist[+cb.dataset.i] = cb.checked;
+      cb.closest(".quiz-opt").classList.toggle("checked", cb.checked);
+      saveState();
+    });
+  });
+}
+function bindSmart(){
+  const map = { smartEsp:"esp", smartVal:"val", smartPrazo:"prazo", smartComo:"como" };
+  Object.keys(map).forEach(id=>{
+    const el = document.getElementById(id);
+    el.value = state.smart[map[id]];
+    el.addEventListener("input", ()=>{ state.smart[map[id]] = el.value; saveState(); });
+  });
+}
+
+/* ============ HOME STATS ============ */
+function renderHomeStats(){
+  const renda = num(state.planner.renda), nec=num(state.planner.necessidades), des=num(state.planner.desejos), gua=num(state.planner.guardado);
+  const sobra = renda - nec - des - gua;
+  document.getElementById("statSaldo").textContent = renda>0 ? brl(sobra) : "—";
+  document.getElementById("statFavoritos").textContent = state.favorites.length;
+}
+
+/* ============ INIT ============ */
+function init(){
+  renderQuiz();
+  renderChips();
+  renderIdeas();
+  buildAccordion(document.getElementById("methodsAccordion"), METHODS);
+  buildAccordion(document.getElementById("investAccordion"), INVEST_GUIDE);
+  bindPlannerInputs();
+  renderPlanner();
+  renderChallenge();
+  renderChecklist();
+  bindSmart();
+  renderHomeStats();
+}
+init();
+
+</script>
