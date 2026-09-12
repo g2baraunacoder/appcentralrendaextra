@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F6F54">
+<meta name="description" content="Central da Renda Extra — painel financeiro pessoal: organize gastos, encontre renda extra, invista com segurança e economize com o desafio de 30 dias.">
 <title>Central da Renda Extra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,11 +42,13 @@
   --success:#4FBE94; --warning:#E3B15C; --danger:#E08277;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
 }
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0; overflow-x:hidden; width:100%;}
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
 body{
   background:var(--bg); color:var(--text); font-family:var(--font-body);
   -webkit-font-smoothing:antialiased; line-height:1.5;
+  overscroll-behavior-y:none;
 }
 h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; text-wrap:balance; margin:0; color:var(--text);}
 p{margin:0;}
@@ -169,7 +178,7 @@ a{color:var(--primary-dark);}
 
 /* Search + chips */
 .search-box{ display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:10px 14px; }
-.search-box input{ border:none; outline:none; background:none; color:var(--text); font-size:14px; width:100%; font-family:var(--font-body); }
+.search-box input{ border:none; outline:none; background:none; color:var(--text); font-size:16px; width:100%; font-family:var(--font-body); }
 .chip-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none; }
 .chip-row::-webkit-scrollbar{ display:none; }
 .chip{
@@ -211,7 +220,7 @@ a{color:var(--primary-dark);}
 .field label{ font-size:12px; font-weight:700; color:var(--text-muted); }
 .field input, .field select{
   border:1px solid var(--border); background:var(--surface); border-radius:11px; padding:10px 12px;
-  font-size:14.5px; color:var(--text); font-family:var(--font-mono); width:100%;
+  font-size:16px; color:var(--text); font-family:var(--font-mono); width:100%;
 }
 .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .field input:focus, .field select:focus{ outline:2px solid var(--primary); outline-offset:1px; }
@@ -287,7 +296,19 @@ a{color:var(--primary-dark);}
 .divider{ height:1px; background:var(--border); margin:4px 0; }
 .method-item{ display:flex; gap:10px; }
 .method-num{ font-family:var(--font-mono); font-size:11px; color:var(--primary-dark); font-weight:700; padding-top:2px; flex:none; width:20px; }
+
+/* ---------- Mobile safety ---------- */
+@media (max-width:380px){
+  .app-main{ padding:16px 14px 96px; }
+  .app-header{ padding:14px 14px 10px; }
+  .flow-grid{ gap:6px; }
+  .flow-cell{ padding:10px 4px; }
+  .quick-grid{ gap:8px; }
+  .field-row{ gap:8px; }
+}
 </style>
+</head>
+<body>
 
 <div class="app-wrap">
   <div class="side-panel">
@@ -1539,3 +1560,5 @@ function init(){
 init();
 
 </script>
+</body>
+</html>
