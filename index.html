@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#1F6F54">
 <meta name="description" content="Central da Renda Extra — painel financeiro pessoal: organize gastos, encontre renda extra, invista com segurança e economize com o desafio de 30 dias.">
 <title>Central da Renda Extra</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMUY2RjU0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTQ0RjNCIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNiIgZmlsbD0idXJsKCNnKSIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTciIHI9IjYiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMTIgMy41IEMxNi4yIDUuOCAxNyAxMSAxMiAxNC41IEM3IDExIDcuOCA1LjggMTIgMy41IFoiIGZpbGw9IiNCODdBMUUiLz48bGluZSB4MT0iMTIiIHkxPSI2IiB4Mj0iMTIiIHkyPSIxMyIgc3Ryb2tlPSIjMTQ0RjNCIiBzdHJva2Utd2lkdGg9IjAuOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQ1Ii8+PC9zdmc+">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -370,7 +371,7 @@ a{color:var(--primary-dark);}
 <div id="authScreen" class="auth-screen" style="display:none">
   <div class="auth-card">
     <div class="auth-brand">
-      <div class="brand-mark">💰</div>
+      <div class="brand-mark"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="17" r="6" fill="#fff"/><path d="M12 3.5 C16.2 5.8 17 11 12 14.5 C7 11 7.8 5.8 12 3.5 Z" fill="var(--accent)"/><line x1="12" y1="6" x2="12" y2="13" stroke="var(--primary-dark)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/></svg></div>
       <div class="brand-text">
         <div class="name">Central da Renda Extra</div>
       </div>
@@ -433,7 +434,7 @@ a{color:var(--primary-dark);}
   <div class="app-shell">
     <header class="app-header">
       <div class="brand">
-        <div class="brand-mark">💰</div>
+        <div class="brand-mark"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="17" r="6" fill="#fff"/><path d="M12 3.5 C16.2 5.8 17 11 12 14.5 C7 11 7.8 5.8 12 3.5 Z" fill="var(--accent)"/><line x1="12" y1="6" x2="12" y2="13" stroke="var(--primary-dark)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/></svg></div>
         <div class="brand-text">
           <div class="name">Central da Renda Extra</div>
           <div class="tag">organizar · economizar · investir · ganhar mais</div>
@@ -1309,6 +1310,7 @@ const CHECKLIST_ITEMS = [
 ];
 
 /* ============ ESTADO (Supabase) ============ */
+const __authHashConfirm = /type=signup/.test(location.hash||"") || /type=signup/.test(location.search||"");
 const SUPABASE_URL = "https://omkggfhpusrglwscfbme.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bWbHToeeoSwAkvp_UftO8Q_6ISnbbza";
 let sb = null;
@@ -1405,7 +1407,7 @@ document.getElementById("signupBtn").addEventListener("click", async ()=>{
   const password = document.getElementById("signupPassword").value;
   if(!email || !password || password.length < 6){ authMsg("signupMsg","Preenche e-mail e uma senha de pelo menos 6 caracteres.", false); return; }
   const btn = document.getElementById("signupBtn"); btn.disabled = true; btn.textContent = "Criando…";
-  const { data, error } = await sb.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.signUp({ email, password, options:{ emailRedirectTo: location.origin + location.pathname } });
   btn.disabled = false; btn.textContent = "Criar conta";
   if(error){
     const m = /registered|exists/i.test(error.message) ? "Esse e-mail já tem conta. Tenta entrar." : ("Não deu pra criar: " + error.message);
@@ -1447,10 +1449,10 @@ document.getElementById("logoutBtn").addEventListener("click", async ()=>{
   location.reload();
 });
 
-async function enterApp(user){
+async function enterApp(user, justConfirmed){
   document.getElementById("authScreen").style.display = "none";
   const loading = document.getElementById("authLoading");
-  loading.textContent = "Carregando seu painel…";
+  loading.textContent = justConfirmed ? "E-mail confirmado! Carregando seu painel…" : "Carregando seu painel…";
   loading.style.display = "flex";
   await loadUserState(user.id);
   loading.style.display = "none";
@@ -1475,7 +1477,7 @@ async function enterApp(user){
     const { data:{ session } } = await sb.auth.getSession();
     document.getElementById("authLoading").style.display = "none";
     if(session && session.user){
-      await enterApp(session.user);
+      await enterApp(session.user, __authHashConfirm);
     } else {
       document.getElementById("authScreen").style.display = "flex";
       showAuthView("authLoginView");
