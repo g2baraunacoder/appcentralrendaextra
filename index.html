@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#F4F7F1; --surface:#FFFFFF; --surface-2:#EAF0E7;
@@ -92,6 +93,55 @@ a{color:var(--primary-dark);}
   .app-wrap{ align-items:flex-start; gap:48px; padding-inline:24px; }
   .side-panel{ display:flex; }
 }
+
+/* ---------- Auth gate ---------- */
+.auth-loading{
+  min-height:100vh; min-height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:24px; line-height:1.5;
+  color:var(--text-muted); font-size:14px; background:var(--bg);
+}
+.auth-screen{
+  min-height:100vh; min-height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(680px 420px at 15% -10%, var(--primary-soft) 0%, transparent 60%),
+    radial-gradient(560px 360px at 100% 0%, var(--accent-soft) 0%, transparent 55%),
+    var(--bg);
+}
+.auth-card{
+  width:100%; max-width:380px;
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:28px 24px; box-shadow:var(--shadow);
+}
+.auth-brand{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+.auth-title{ font-size:21px; margin-top:2px; }
+.auth-sub{ color:var(--text-muted); font-size:13.5px; margin-top:4px; }
+.auth-field{ margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+.auth-field label{ font-size:12.5px; font-weight:700; color:var(--text-muted); }
+.auth-field input{
+  border:1px solid var(--border); border-radius:12px; padding:12px 14px;
+  font-size:16px; background:var(--bg); color:var(--text); font-family:var(--font-body);
+}
+.auth-field input:focus-visible{ outline:2px solid var(--primary); outline-offset:1px; }
+.auth-btn{
+  margin-top:18px; width:100%; border:none; border-radius:12px; padding:13px;
+  background:var(--primary); color:#fff; font-weight:800; font-size:14.5px; cursor:pointer;
+  font-family:var(--font-body);
+}
+.auth-btn:disabled{ opacity:.6; cursor:default; }
+.auth-btn-ghost{
+  margin-top:10px; width:100%; border:1px solid var(--border); border-radius:12px; padding:11px;
+  background:none; color:var(--text); font-weight:700; font-size:13.5px; cursor:pointer;
+  font-family:var(--font-body);
+}
+.auth-switch{ margin-top:18px; text-align:center; font-size:13px; color:var(--text-muted); }
+.auth-switch button{ background:none; border:none; color:var(--primary-dark); font-weight:800; cursor:pointer; font-size:13px; padding:0; font-family:var(--font-body); }
+.auth-msg{ margin-top:14px; font-size:13px; padding:10px 12px; border-radius:10px; line-height:1.4; }
+.auth-msg.error{ background:color-mix(in srgb, var(--danger) 12%, transparent); color:var(--danger); }
+.auth-msg.ok{ background:color-mix(in srgb, var(--success) 14%, transparent); color:var(--success); }
+.logout-btn{ background:none; border:none; color:var(--text-muted); font-size:11px; font-weight:700; cursor:pointer; padding:0; font-family:var(--font-body); text-decoration:underline; }
 
 /* ---------- Header ---------- */
 .app-header{
@@ -315,6 +365,58 @@ a{color:var(--primary-dark);}
 </head>
 <body>
 
+<div id="authLoading" class="auth-loading">Carregando…</div>
+
+<div id="authScreen" class="auth-screen" style="display:none">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-mark">💰</div>
+      <div class="brand-text">
+        <div class="name">Central da Renda Extra</div>
+      </div>
+    </div>
+
+    <div id="authLoginView">
+      <div class="auth-title">Entrar na sua conta</div>
+      <div class="auth-sub">Acesse seu painel financeiro pessoal.</div>
+      <div class="auth-field"><label for="loginEmail">E-mail</label><input type="email" id="loginEmail" autocomplete="email" placeholder="seuemail@exemplo.com"></div>
+      <div class="auth-field"><label for="loginPassword">Senha</label><input type="password" id="loginPassword" autocomplete="current-password" placeholder="Sua senha"></div>
+      <button class="auth-btn" id="loginBtn" type="button">Entrar</button>
+      <button class="auth-btn-ghost" id="forgotBtn" type="button">Esqueci minha senha</button>
+      <div id="loginMsg"></div>
+      <div class="auth-switch">Ainda não tem conta? <button id="gotoSignup" type="button">Criar conta</button></div>
+    </div>
+
+    <div id="authSignupView" style="display:none">
+      <div class="auth-title">Criar sua conta</div>
+      <div class="auth-sub">Leva 1 minuto. Seus dados ficam salvos com segurança, só você tem acesso.</div>
+      <div class="auth-field"><label for="signupEmail">E-mail</label><input type="email" id="signupEmail" autocomplete="email" placeholder="seuemail@exemplo.com"></div>
+      <div class="auth-field"><label for="signupPassword">Crie uma senha</label><input type="password" id="signupPassword" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
+      <button class="auth-btn" id="signupBtn" type="button">Criar conta</button>
+      <div id="signupMsg"></div>
+      <div class="auth-switch">Já tem conta? <button id="gotoLogin" type="button">Entrar</button></div>
+    </div>
+
+    <div id="authForgotView" style="display:none">
+      <div class="auth-title">Recuperar senha</div>
+      <div class="auth-sub">Vamos te mandar um link por e-mail pra criar uma nova senha.</div>
+      <div class="auth-field"><label for="forgotEmail">E-mail</label><input type="email" id="forgotEmail" autocomplete="email" placeholder="seuemail@exemplo.com"></div>
+      <button class="auth-btn" id="forgotSendBtn" type="button">Enviar link</button>
+      <div id="forgotMsg"></div>
+      <div class="auth-switch"><button id="backToLogin" type="button">Voltar pro login</button></div>
+    </div>
+
+    <div id="authResetView" style="display:none">
+      <div class="auth-title">Crie uma nova senha</div>
+      <div class="auth-sub">Digite sua nova senha de acesso.</div>
+      <div class="auth-field"><label for="resetPassword">Nova senha</label><input type="password" id="resetPassword" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
+      <button class="auth-btn" id="resetSaveBtn" type="button">Salvar nova senha</button>
+      <div id="resetMsg"></div>
+    </div>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none">
 <div class="app-wrap">
   <div class="side-panel">
     <div class="kicker">Painel financeiro pessoal</div>
@@ -337,7 +439,10 @@ a{color:var(--primary-dark);}
           <div class="tag">organizar · economizar · investir · ganhar mais</div>
         </div>
       </div>
-      <div class="streak-chip" id="streakChip">🔥 <span id="streakVal">0</span> dias</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div class="streak-chip" id="streakChip">🔥 <span id="streakVal">0</span> dias</div>
+        <button class="logout-btn" id="logoutBtn" type="button">Sair da conta</button>
+      </div>
     </header>
 
     <main class="app-main" id="appMain">
@@ -574,6 +679,7 @@ a{color:var(--primary-dark);}
       <button class="tab-btn" data-tab="bonus"><span class="ic">🎁</span><span class="l">Bônus</span></button>
     </nav>
   </div>
+</div>
 </div>
 
 <script>
@@ -1202,15 +1308,12 @@ const CHECKLIST_ITEMS = [
 "Atualizar a planilha de controle financeiro",
 ];
 
-/* ============ ESTADO ============ */
-const STORAGE_KEY = "cre_v1";
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return Object.assign(defaultState(), JSON.parse(raw));
-  }catch(e){}
-  return defaultState();
-}
+/* ============ ESTADO (Supabase) ============ */
+const SUPABASE_URL = "https://omkggfhpusrglwscfbme.supabase.co";
+const SUPABASE_KEY = "sb_publishable_bWbHToeeoSwAkvp_UftO8Q_6ISnbbza";
+let sb = null;
+try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }catch(e){}
+
 function defaultState(){
   return {
     favorites: [],
@@ -1220,8 +1323,168 @@ function defaultState(){
     smart: { esp:"", val:"", prazo:"", como:"" },
   };
 }
-let state = loadState();
-function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+let state = defaultState();
+let saveTimer = null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    try{
+      const { data:{ user } } = await sb.auth.getUser();
+      if(!user) return;
+      await sb.from("user_data").update({
+        favorites: state.favorites,
+        planner: state.planner,
+        challenge: state.challenge,
+        checklist: state.checklist,
+        smart: state.smart,
+        updated_at: new Date().toISOString(),
+      }).eq("user_id", user.id);
+    }catch(e){}
+  }, 600);
+}
+
+async function loadUserState(userId){
+  const def = defaultState();
+  try{
+    const { data } = await sb.from("user_data").select("*").eq("user_id", userId).maybeSingle();
+    if(data){
+      state = {
+        favorites: data.favorites || def.favorites,
+        planner: Object.assign(def.planner, data.planner || {}),
+        challenge: (Array.isArray(data.challenge) && data.challenge.length===30) ? data.challenge : def.challenge,
+        checklist: (Array.isArray(data.checklist) && data.checklist.length===CHECKLIST_ITEMS.length) ? data.checklist : def.checklist,
+        smart: Object.assign(def.smart, data.smart || {}),
+      };
+      return;
+    }
+  }catch(e){}
+  state = def;
+  try{ await sb.from("user_data").insert(Object.assign({ user_id:userId }, state)); }catch(e){}
+}
+
+/* ============ AUTENTICAÇÃO ============ */
+function showAuthView(view){
+  ["authLoginView","authSignupView","authForgotView","authResetView"].forEach(id=>{
+    document.getElementById(id).style.display = (id===view) ? "block" : "none";
+  });
+}
+function authMsg(elId, text, ok){
+  const el = document.getElementById(elId);
+  el.textContent = text;
+  el.className = "auth-msg " + (ok ? "ok" : "error");
+}
+function clearAuthMsg(elId){
+  const el = document.getElementById(elId);
+  el.textContent = ""; el.className = "";
+}
+
+document.getElementById("gotoSignup").addEventListener("click", ()=>{ clearAuthMsg("loginMsg"); showAuthView("authSignupView"); });
+document.getElementById("gotoLogin").addEventListener("click", ()=>{ clearAuthMsg("signupMsg"); showAuthView("authLoginView"); });
+document.getElementById("forgotBtn").addEventListener("click", ()=>{ clearAuthMsg("loginMsg"); showAuthView("authForgotView"); });
+document.getElementById("backToLogin").addEventListener("click", ()=> showAuthView("authLoginView"));
+
+document.getElementById("loginBtn").addEventListener("click", async ()=>{
+  clearAuthMsg("loginMsg");
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  if(!email || !password){ authMsg("loginMsg","Preenche e-mail e senha.", false); return; }
+  const btn = document.getElementById("loginBtn"); btn.disabled = true; btn.textContent = "Entrando…";
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = "Entrar";
+  if(error){
+    const m = /confirm/i.test(error.message) ? "Confirme seu e-mail antes de entrar (veja sua caixa de entrada)." : "E-mail ou senha incorretos.";
+    authMsg("loginMsg", m, false);
+    return;
+  }
+  await enterApp(data.user);
+});
+
+document.getElementById("signupBtn").addEventListener("click", async ()=>{
+  clearAuthMsg("signupMsg");
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  if(!email || !password || password.length < 6){ authMsg("signupMsg","Preenche e-mail e uma senha de pelo menos 6 caracteres.", false); return; }
+  const btn = document.getElementById("signupBtn"); btn.disabled = true; btn.textContent = "Criando…";
+  const { data, error } = await sb.auth.signUp({ email, password });
+  btn.disabled = false; btn.textContent = "Criar conta";
+  if(error){
+    const m = /registered|exists/i.test(error.message) ? "Esse e-mail já tem conta. Tenta entrar." : ("Não deu pra criar: " + error.message);
+    authMsg("signupMsg", m, false);
+    return;
+  }
+  if(data.session){
+    await enterApp(data.user);
+  } else {
+    authMsg("signupMsg","Conta criada! Confira seu e-mail e clique no link de confirmação pra poder entrar.", true);
+  }
+});
+
+document.getElementById("forgotSendBtn").addEventListener("click", async ()=>{
+  clearAuthMsg("forgotMsg");
+  const email = document.getElementById("forgotEmail").value.trim();
+  if(!email){ authMsg("forgotMsg","Digita seu e-mail.", false); return; }
+  const btn = document.getElementById("forgotSendBtn"); btn.disabled = true; btn.textContent = "Enviando…";
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  btn.disabled = false; btn.textContent = "Enviar link";
+  if(error){ authMsg("forgotMsg","Não deu pra enviar: " + error.message, false); return; }
+  authMsg("forgotMsg","Te mandamos um e-mail com o link pra criar uma nova senha.", true);
+});
+
+document.getElementById("resetSaveBtn").addEventListener("click", async ()=>{
+  clearAuthMsg("resetMsg");
+  const password = document.getElementById("resetPassword").value;
+  if(!password || password.length < 6){ authMsg("resetMsg","Mínimo 6 caracteres.", false); return; }
+  const btn = document.getElementById("resetSaveBtn"); btn.disabled = true; btn.textContent = "Salvando…";
+  const { error } = await sb.auth.updateUser({ password });
+  btn.disabled = false; btn.textContent = "Salvar nova senha";
+  if(error){ authMsg("resetMsg","Não deu pra salvar: " + error.message, false); return; }
+  authMsg("resetMsg","Senha alterada! Redirecionando…", true);
+  setTimeout(()=>{ location.href = location.origin + location.pathname; }, 1200);
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  await sb.auth.signOut();
+  location.reload();
+});
+
+async function enterApp(user){
+  document.getElementById("authScreen").style.display = "none";
+  const loading = document.getElementById("authLoading");
+  loading.textContent = "Carregando seu painel…";
+  loading.style.display = "flex";
+  await loadUserState(user.id);
+  loading.style.display = "none";
+  document.getElementById("appRoot").style.display = "";
+  init();
+}
+
+(async function boot(){
+  if(!sb){
+    document.getElementById("authLoading").textContent = "Não conseguimos carregar o sistema de login agora. Verifique sua internet e recarregue a página.";
+    return;
+  }
+  try{
+    sb.auth.onAuthStateChange((event)=>{
+      if(event === "PASSWORD_RECOVERY"){
+        document.getElementById("authLoading").style.display = "none";
+        document.getElementById("appRoot").style.display = "none";
+        const scr = document.getElementById("authScreen"); scr.style.display = "flex";
+        showAuthView("authResetView");
+      }
+    });
+    const { data:{ session } } = await sb.auth.getSession();
+    document.getElementById("authLoading").style.display = "none";
+    if(session && session.user){
+      await enterApp(session.user);
+    } else {
+      document.getElementById("authScreen").style.display = "flex";
+      showAuthView("authLoginView");
+    }
+  }catch(e){
+    document.getElementById("authLoading").style.display = "flex";
+    document.getElementById("authLoading").textContent = "Não conseguimos carregar o sistema de login agora. Verifique sua internet e recarregue a página.";
+  }
+})();
 
 /* ============ HELPERS ============ */
 function brl(n){
@@ -1562,8 +1825,6 @@ function init(){
   bindSmart();
   renderHomeStats();
 }
-init();
-
 </script>
 </body>
 </html>
