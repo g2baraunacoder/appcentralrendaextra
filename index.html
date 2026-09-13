@@ -417,7 +417,7 @@ a{color:var(--primary-dark);}
   </div>
 </div>
 
-<div id="appRoot" style="display:none">
+<div id="paywallScreen" class="auth-screen" style="display:none"><div class="auth-card"><div class="auth-brand"><div class="brand-text"><div class="name">Central da Renda Extra</div></div></div><div class="auth-sub">Recebemos sua conta (<span id="paywallEmail"></span>), mas ainda não identificamos o pagamento confirmado para liberar o acesso.</div><div class="auth-sub">Finalize o pagamento usando o mesmo e-mail dessa conta — a liberação é automática.</div><a class="auth-btn" id="paywallPayBtn" href="https://pay.cakto.com.br/tsfu9ex_1104376" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">Ir para o pagamento</a><button class="auth-btn" id="paywallRecheckBtn" type="button">Já paguei, verificar novamente</button><div id="paywallMsg" class="auth-msg"></div><button class="auth-btn-ghost" id="paywallLogoutBtn" type="button">Sair</button></div></div><div id="appRoot" style="display:none">
 <div class="app-wrap">
   <div class="side-panel">
     <div class="kicker">Painel financeiro pessoal</div>
@@ -1444,15 +1444,15 @@ document.getElementById("resetSaveBtn").addEventListener("click", async ()=>{
   setTimeout(()=>{ location.href = location.origin + location.pathname; }, 1200);
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+async function checkPaymentStatus(email){ try{ const { data, error } = await sb.from("payments").select("status").ilike("email", email).maybeSingle(); if(error || !data) return false; return data.status === "paid"; }catch(e){ return false; } } document.getElementById("paywallRecheckBtn").addEventListener("click", async ()=>{ const { data:{ user } } = await sb.auth.getUser(); if(!user) return; const btn = document.getElementById("paywallRecheckBtn"); btn.disabled = true; btn.textContent = "Verificando…"; const paid = await checkPaymentStatus(user.email); btn.disabled = false; btn.textContent = "Já paguei, verificar novamente"; if(paid){ await enterApp(user, false); } else { const m = document.getElementById("paywallMsg"); m.textContent = "Ainda não identificamos o pagamento. Aguarde alguns minutos após pagar e tente de novo."; m.className = "auth-msg error"; } }); document.getElementById("paywallLogoutBtn").addEventListener("click", async ()=>{ await sb.auth.signOut(); location.reload(); }); document.getElementById("logoutBtn").addEventListener("click", async ()=>{
   await sb.auth.signOut();
   location.reload();
 });
 
 async function enterApp(user, justConfirmed){
-  document.getElementById("authScreen").style.display = "none";
-  const loading = document.getElementById("authLoading");
-  loading.textContent = justConfirmed ? "E-mail confirmado! Carregando seu painel…" : "Carregando seu painel…";
+  document.getElementById("authScreen").style.display = "none"; document.getElementById("paywallScreen").style.display = "none";
+  const loading = document.getElementById("authLoading"); loading.textContent = "Verificando pagamento…"; loading.style.display = "flex";
+  const __paid = await checkPaymentStatus(user.email); if(!__paid){ loading.style.display = "none"; document.getElementById("paywallEmail").textContent = user.email; document.getElementById("paywallScreen").style.display = "flex"; return; } loading.textContent = justConfirmed ? "E-mail confirmado! Carregando seu painel…" : "Carregando seu painel…";
   loading.style.display = "flex";
   await loadUserState(user.id);
   loading.style.display = "none";
