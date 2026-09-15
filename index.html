@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#10182B">
+<meta name="theme-color" content="#063D2B">
 <meta name="description" content="Central da Renda Extra — painel financeiro pessoal: organize gastos, encontre renda extra, invista com segurança e economize com o desafio de 30 dias.">
 <title>Central da Renda Extra</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+PHJlY3Qgd2lkdGg9JzI0JyBoZWlnaHQ9JzI0JyByeD0nNScgZmlsbD0nIzEwMTgyQicvPjxyZWN0IHg9JzQuNScgeT0nMy41JyB3aWR0aD0nMTUnIGhlaWdodD0nMTcnIHJ4PScxLjYnIGZpbGw9J25vbmUnIHN0cm9rZT0nI0Y1RjJFNycgc3Ryb2tlLXdpZHRoPScxLjQnLz48cGF0aCBkPSdNNC41IDcuNkgxOS41JyBzdHJva2U9JyNGNUYyRTcnIHN0cm9rZS13aWR0aD0nMS40Jy8+PHBhdGggZD0nTTcuMyAxNS42TDEwIDEyLjRMMTIuNiAxNC40TDE2LjcgOS42JyBzdHJva2U9JyNFOUJCNUMnIHN0cm9rZS13aWR0aD0nMS43JyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnLz48Y2lyY2xlIGN4PScxNi43JyBjeT0nOS42JyByPScxLjE1JyBmaWxsPScjRTlCQjVDJy8+PC9zdmc+">
@@ -13,35 +13,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
-  --bg:#F6F1E4; --surface:#FFFFFF; --surface-2:#ECE3CC;
-  --text:#1C2333; --text-muted:#5B6478;
-  --primary:#1B3B6F; --primary-dark:#12294D; --primary-soft:#DCE4F0;
-  --accent:#C98A2E; --accent-soft:#F3E3C0;
-  --border:#E2D9BC;
-  --success:#2E8B57; --warning:#B8860B; --danger:#B3413B;
-  --shadow: 0 1px 2px rgba(22,36,29,.06), 0 8px 24px -12px rgba(22,36,29,.18);
+  --bg:#F5F1E6; --surface:#FFFFFF; --surface-2:#E6EFE4;
+  --text:#111111; --text-muted:#5B6660;
+  --primary:#0B7A4B; --primary-dark:#063D2B; --primary-soft:#DCEEE0;
+  --accent:#0B7A4B; --accent-soft:#DCEEE0;
+  --border:#DCE5D9;
+  --success:#0B7A4B; --warning:#E99A91; --danger:#E99A91;
+  --shadow: 0 1px 2px rgba(6,61,43,.06), 0 8px 24px -12px rgba(6,61,43,.18);
   --font-display:'Fraunces', Georgia, serif;
   --font-body:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#10182B; --surface:#17213C; --surface-2:#1D2A4C;
-    --text:#EDE7D6; --text-muted:#9AA3BD;
-    --primary:#E9BB5C; --primary-dark:#D9A63E; --primary-soft:#332711;
-    --accent:#D96A4B; --accent-soft:#3A231C;
-    --border:#26314F;
-    --success:#4FBE94; --warning:#E3B15C; --danger:#E08277;
+    --bg:#063D2B; --surface:#0A4A34; --surface-2:#0F5940;
+    --text:#F5F1E6; --text-muted:#A9BDB2;
+    --primary:#9BEF4A; --primary-dark:#0B7A4B; --primary-soft:#1C2B0D;
+    --accent:#9BEF4A; --accent-soft:#1C2B0D;
+    --border:#1C4A36;
+    --success:#9BEF4A; --warning:#E99A91; --danger:#E99A91;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#10182B; --surface:#17213C; --surface-2:#1D2A4C;
-  --text:#EDE7D6; --text-muted:#9AA3BD;
-  --primary:#E9BB5C; --primary-dark:#D9A63E; --primary-soft:#332711;
-  --accent:#D96A4B; --accent-soft:#3A231C;
-  --border:#26314F;
-  --success:#4FBE94; --warning:#E3B15C; --danger:#E08277;
+  --bg:#063D2B; --surface:#0A4A34; --surface-2:#0F5940;
+  --text:#F5F1E6; --text-muted:#A9BDB2;
+  --primary:#9BEF4A; --primary-dark:#0B7A4B; --primary-soft:#1C2B0D;
+  --accent:#9BEF4A; --accent-soft:#1C2B0D;
+  --border:#1C4A36;
+  --success:#9BEF4A; --warning:#E99A91; --danger:#E99A91;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -157,7 +157,7 @@ a{color:var(--primary-dark);}
 .brand{ display:flex; align-items:center; gap:10px; }
 .brand-mark{
   width:44px;height:44px;border-radius:11px;
-  background:linear-gradient(155deg, #17213C, #0C1220);
+  background:linear-gradient(155deg, #0B7A4B, #063D2B);
   display:flex;align-items:center;justify-content:center;
   font-size:17px; flex:none; box-shadow:var(--shadow);
 }
@@ -371,7 +371,7 @@ a{color:var(--primary-dark);}
 <div id="authScreen" class="auth-screen" style="display:none">
   <div class="auth-card">
     <div class="auth-brand">
-      <div class="brand-mark"><svg viewBox='0 0 28 28' width='26' height='26' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'><rect x='4' y='3' width='20' height='22' rx='2.5' stroke='#F5F2E7' stroke-width='1.8'/><path d='M4 8.5H24' stroke='#F5F2E7' stroke-width='1.8'/><path d='M8.5 19L12 15L15.2 17.6L20 11.5' stroke='#E9BB5C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='20' cy='11.5' r='1.5' fill='#E9BB5C'/></svg></div>
+      <div class="brand-mark"><svg viewBox='0 0 28 28' width='26' height='26' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'><rect x='4' y='3' width='20' height='22' rx='2.5' stroke='#F5F1E6' stroke-width='1.8'/><path d='M4 8.5H24' stroke='#F5F1E6' stroke-width='1.8'/><path d='M8.5 19L12 15L15.2 17.6L20 11.5' stroke='#9BEF4A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='20' cy='11.5' r='1.5' fill='#9BEF4A'/></svg></div>
       <div class="brand-text">
         <div class="name">Central da Renda Extra</div>
       </div>
@@ -390,7 +390,7 @@ a{color:var(--primary-dark);}
 
     <div id="authSignupView" style="display:none">
       <div class="auth-title">Criar sua conta</div>
-      <div class="auth-sub">Leva 1 minuto. Seus dados ficam salvos com segurança, só você tem acesso.</div><div style="background:rgba(232,116,90,.12);border:1px solid #E8746B;border-radius:10px;padding:10px 12px;margin:12px 0;font-size:13px;font-weight:700;color:#E8746B"><svg viewBox='0 0 24 24' width='1em' height='1em' fill='none' stroke='currentColor' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-0.2em' aria-hidden='true' ><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg> Use o MESMO e-mail que você usou no pagamento — é assim que liberamos seu acesso automaticamente.</div>
+      <div class="auth-sub">Leva 1 minuto. Seus dados ficam salvos com segurança, só você tem acesso.</div><div style="background:rgba(233,154,145,.12);border:1px solid #E99A91;border-radius:10px;padding:10px 12px;margin:12px 0;font-size:13px;font-weight:700;color:#E99A91"><svg viewBox='0 0 24 24' width='1em' height='1em' fill='none' stroke='currentColor' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-0.2em' aria-hidden='true' ><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg> Use o MESMO e-mail que você usou no pagamento — é assim que liberamos seu acesso automaticamente.</div>
       <div class="auth-field"><label for="signupEmail">E-mail</label><input type="email" id="signupEmail" autocomplete="email" placeholder="seuemail@exemplo.com"></div>
       <div class="auth-field"><label for="signupPassword">Crie uma senha</label><input type="password" id="signupPassword" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
       <button class="auth-btn" id="signupBtn" type="button">Criar conta</button>
@@ -434,7 +434,7 @@ a{color:var(--primary-dark);}
   <div class="app-shell">
     <header class="app-header">
       <div class="brand">
-        <div class="brand-mark"><svg viewBox='0 0 28 28' width='26' height='26' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'><rect x='4' y='3' width='20' height='22' rx='2.5' stroke='#F5F2E7' stroke-width='1.8'/><path d='M4 8.5H24' stroke='#F5F2E7' stroke-width='1.8'/><path d='M8.5 19L12 15L15.2 17.6L20 11.5' stroke='#E9BB5C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='20' cy='11.5' r='1.5' fill='#E9BB5C'/></svg></div>
+        <div class="brand-mark"><svg viewBox='0 0 28 28' width='26' height='26' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'><rect x='4' y='3' width='20' height='22' rx='2.5' stroke='#F5F1E6' stroke-width='1.8'/><path d='M4 8.5H24' stroke='#F5F1E6' stroke-width='1.8'/><path d='M8.5 19L12 15L15.2 17.6L20 11.5' stroke='#9BEF4A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='20' cy='11.5' r='1.5' fill='#9BEF4A'/></svg></div>
         <div class="brand-text">
           <div class="name">Central da Renda Extra</div>
           <div class="tag">organizar · economizar · investir · ganhar mais</div>
